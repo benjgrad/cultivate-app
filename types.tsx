@@ -35,7 +35,7 @@ export interface TodayTask extends BaseTask {
 export interface Perennial extends BaseTask {
   id: string;
   name: string;
-  parent?: Perennial;
+  parent?: BaseTask;
   subtasks: Perennial[];
   frequency?: string; //TODO use value in array?
   milestones?: MileStone[];

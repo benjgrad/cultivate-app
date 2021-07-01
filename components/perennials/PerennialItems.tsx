@@ -2,9 +2,11 @@ import * as React from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
 import uuid from 'react-native-uuid';
 import { Text, View } from '../Themed';
-import { MileStone, Perennial } from '../../types';
+import { BaseTask, MileStone, Perennial } from '../../types';
 import { Ionicons } from '@expo/vector-icons';
 import AddPerennialModal from './AddPerennialModal';
+import { newPerennial } from '../../recoil/newPerennial';
+import { useRecoilState } from 'recoil';
 
 
 interface PerennialItemProps extends Perennial {
@@ -16,22 +18,28 @@ export const itemHeight = 50;
 export const checkBoxHeight = 30;
 export const PerennialItem: React.FC<PerennialItemProps> = (props) => {
     const [modalVisible, setModalVisible] = React.useState(false);
+    const [isNew, setIsNew] = useRecoilState(newPerennial);
     let currentItem = props as Perennial;
     const addOrUpdatePerennial = (item: Perennial) => {
-        if (!currentItem.subtasks) {
-            currentItem.subtasks = [item];
+        if (item.id == currentItem.id) {
+            props.addOrUpdatePerennial(item);
         }
         else {
-            let i = 0;
-            const found = currentItem.subtasks?.find((elem: Perennial, iter: number) => {
-                i = iter;
-                return item.id == elem.id;
-            });
-            if (!!found) {
-                currentItem.subtasks[i] = item;
+            if (!currentItem.subtasks) {
+                currentItem.subtasks = [item];
             }
             else {
-                currentItem.subtasks.push(item);
+                let i = 0;
+                const found = currentItem.subtasks?.find((elem: Perennial, iter: number) => {
+                    i = iter;
+                    return item.id == elem.id;
+                });
+                if (!!found) {
+                    currentItem.subtasks[i] = item;
+                }
+                else {
+                    currentItem.subtasks.push(item);
+                }
             }
         }
         props.addOrUpdatePerennial(currentItem);
@@ -39,10 +47,19 @@ export const PerennialItem: React.FC<PerennialItemProps> = (props) => {
     }
     return (<>
         <View style={styles.box}>
+
             <View style={styles.textContainer}>
-                <Text style={styles.name}>{props.name}</Text>
+                <TouchableOpacity onPress={() => {
+                    setIsNew(false);
+                    setModalVisible(!modalVisible);
+                }}>
+                    <Text style={styles.name}>{props.name}</Text>
+                </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
+            <TouchableOpacity onPress={() => {
+                setIsNew(true);
+                setModalVisible(!modalVisible);
+            }}>
                 <Ionicons style={styles.addSubtask} size={checkBoxHeight} name="add" />
             </TouchableOpacity>
         </View>
@@ -52,10 +69,11 @@ export const PerennialItem: React.FC<PerennialItemProps> = (props) => {
                     setModalVisible(!modalVisible);
                 }}
                 addOrUpdatePerennial={addOrUpdatePerennial}
-                key={item.id} {...item} />)}
+                key={item.id} {...{ ...item, parent: currentItem as BaseTask }} />)}
             {props.milestones && props.milestones.map(item => <MileStoneItem key={item.id} {...item} />)}
         </View>
         <AddPerennialModal
+            currentItem={currentItem}
             modalVisible={modalVisible}
             addOrUpdatePerennial={addOrUpdatePerennial}
             setParentModalVisible={() => {

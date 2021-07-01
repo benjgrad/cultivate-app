@@ -3,10 +3,13 @@ import { Modal, StyleSheet, View, Text, TouchableOpacity, TextInput } from 'reac
 import uuid from 'react-native-uuid';
 import { Perennial } from '../../types';
 import { Dimensions } from 'react-native';
+import { useRecoilState } from 'recoil';
+import { newPerennial } from '../../recoil/newPerennial';
 const { height } = Dimensions.get('window');
 
 
 type AddPerennialModalProps = {
+    currentItem?: Perennial;
     modalVisible: boolean;
     setParentModalVisible: () => void;
     addOrUpdatePerennial: (item: Perennial) => void;
@@ -14,37 +17,51 @@ type AddPerennialModalProps = {
 
 const AddPerennialModal: React.FC<AddPerennialModalProps> = (props) => {
     let { modalVisible, addOrUpdatePerennial } = props;
+    const [isNew, setIsNew] = useRecoilState(newPerennial);
+    const backButtonTxt = isNew ? props.currentItem?.name :
+        !!props.currentItem?.parent?.name ? props.currentItem?.parent?.name : ""
     return <Modal
         animationType="slide"
         transparent={true}
-        visible={modalVisible}
+        visible={modalVisible && !!props?.currentItem}
     >
         <View style={styles.modalView}>
             <View style={styles.topNav}>
                 <TouchableOpacity onPress={() => {
-                    if (props.setParentModalVisible) {
+                    if (isNew && !!props.currentItem) {
+                        setIsNew(!isNew);
+                    }
+                    else if (props.setParentModalVisible) {
                         props.setParentModalVisible();
                     }
                 }}
                     style={styles.modalBack}>
-                    <Text style={styles.modalDoneText}>{"< Parent Item"}</Text>
+                    <Text style={styles.modalDoneText}>{"<" + backButtonTxt}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.modalDone}
                     onPress={() => {
-                        addOrUpdatePerennial({
-                            id: uuid.v4(),
-                            name: "Dips",
-                            subtasks: [], //TODO populate with real data
-                        } as Perennial);
+                        if (!isNew && !!props.currentItem) {
+                            addOrUpdatePerennial(props.currentItem);
+                        }
+                        else {
+                            addOrUpdatePerennial({
+                                id: uuid.v4(),
+                                name: "Dips",
+                                subtasks: [], //TODO populate with real data
+                            } as Perennial);
+                        }
                     }}
                 >
                     <Text style={styles.modalDoneText}>Done</Text>
                 </TouchableOpacity>
             </View>
-            <TextInput
+            {isNew && <TextInput
                 style={[styles.inputRow, styles.nameTextField]}
-                placeholder={"Name"} />
+                placeholder={"Name"} />}
+            {!isNew && props.currentItem && <TextInput
+                style={[styles.inputRow, styles.nameTextField]}
+                placeholder={"Name"} value={props.currentItem.name} />}
             <TextInput
                 style={[styles.inputRow, styles.nameTextField]}
                 value={"Once per week"} />
