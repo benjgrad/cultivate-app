@@ -65,7 +65,7 @@ const taskData = [
 
 const TodayScreen: React.FC = () => {
     return (
-        <MainLayout title={moment().format('MMMM Do')} >
+        <MainLayout title={moment().format('MMMM D')} >
             <FlatList
                 data={taskData}
                 renderItem={({ item }: { item: TodayTask }) =>

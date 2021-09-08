@@ -7,24 +7,43 @@ import { Ionicons } from '@expo/vector-icons';
 import AddPerennialModal from './AddPerennialModal';
 import { newPerennial } from '../../recoil/newPerennial';
 import { useRecoilState } from 'recoil';
+import { MileStoneItem } from './MilestoneProps';
 
 
 interface PerennialItemProps extends Perennial {
     addOrUpdatePerennial: (item: Perennial) => void;
     setParentModalVisible: () => void;
-}
-;
-export const itemHeight = 50;
-export const checkBoxHeight = 30;
+};
+
+const itemHeight = 50;
+const checkBoxHeight = 30;
 export const PerennialItem: React.FC<PerennialItemProps> = (props) => {
     const [modalVisible, setModalVisible] = React.useState(false);
-    const [isNew, setIsNew] = useRecoilState(newPerennial);
-    let currentItem = props as Perennial;
+    const [_, setIsNew] = useRecoilState(newPerennial);
+
+    const [currentItem, setCurrentItem] = React.useState(props as Perennial);
+
+    const toggleComplete = (id: string) => {
+        let i = 0;
+        const found = currentItem.milestones?.find((elem: MileStone, iter: number) => {
+            i = iter;
+            return id == elem.id;
+        });
+        if (!!found && !!currentItem.milestones) {
+            found.isComplete = !found.isComplete;
+            currentItem.milestones[i] = found;
+            addOrUpdatePerennial(currentItem);
+        }
+
+    }
     const addOrUpdatePerennial = (item: Perennial) => {
+        //Update the current perennial
         if (item.id == currentItem.id) {
             props.addOrUpdatePerennial(item);
+            setCurrentItem(item);
         }
         else {
+            //Add to subtasks if none are found
             if (!currentItem.subtasks) {
                 currentItem.subtasks = [item];
             }
@@ -34,15 +53,19 @@ export const PerennialItem: React.FC<PerennialItemProps> = (props) => {
                     i = iter;
                     return item.id == elem.id;
                 });
-                if (!!found) {
-                    currentItem.subtasks[i] = item;
-                }
-                else {
+
+                //Add to subtaks if none are found
+                if (!found) {
                     currentItem.subtasks.push(item);
                 }
+                //Update subtask if found
+                else {
+                    currentItem.subtasks[i] = item;
+                }
             }
+            //propogate changes to parent
+            props.addOrUpdatePerennial(currentItem);
         }
-        props.addOrUpdatePerennial(currentItem);
         setModalVisible(false);
     }
     return (<>
@@ -53,7 +76,7 @@ export const PerennialItem: React.FC<PerennialItemProps> = (props) => {
                     setIsNew(false);
                     setModalVisible(!modalVisible);
                 }}>
-                    <Text style={styles.name}>{props.name}</Text>
+                    <Text style={styles.name}>{currentItem.name}</Text>
                 </TouchableOpacity>
             </View>
             <TouchableOpacity onPress={() => {
@@ -70,9 +93,9 @@ export const PerennialItem: React.FC<PerennialItemProps> = (props) => {
                 }}
                 addOrUpdatePerennial={addOrUpdatePerennial}
                 key={item.id} {...{ ...item, parent: currentItem as BaseTask }} />)}
-            {props.milestones && props.milestones.map(item => <MileStoneItem key={item.id} {...item} />)}
+            {props.milestones && props.milestones.map(item => <MileStoneItem key={item.id} toggleComplete={toggleComplete} {...item} />)}
         </View>
-        <AddPerennialModal
+        {modalVisible && <AddPerennialModal
             currentItem={currentItem}
             modalVisible={modalVisible}
             addOrUpdatePerennial={addOrUpdatePerennial}
@@ -80,20 +103,8 @@ export const PerennialItem: React.FC<PerennialItemProps> = (props) => {
                 setModalVisible(!modalVisible);
                 props.setParentModalVisible();
             }}
-        />
+        />}
     </>);
-};
-const MileStoneItem: React.FC<MileStone> = (props) => {
-    return (
-        <View style={styles.box}>
-            <View style={styles.textContainer}>
-                <Text style={styles.name}>{props.name}</Text>
-            </View>
-            <View style={styles.checkBox}>
-                {props.isComplete && <Ionicons size={24} name="checkmark-outline" />}
-            </View>
-        </View>
-    );
 };
 
 const styles = StyleSheet.create({
@@ -123,16 +134,6 @@ const styles = StyleSheet.create({
     addSubtask: {
         width: checkBoxHeight,
         height: checkBoxHeight,
-        position: 'absolute',
-        right: 15,
-        top: (itemHeight - checkBoxHeight) / 2,
-    },
-    checkBox: {
-        width: checkBoxHeight,
-        height: checkBoxHeight,
-        borderRadius: 20,
-        borderColor: 'black', //TODO theme
-        borderWidth: 3,
         position: 'absolute',
         right: 15,
         top: (itemHeight - checkBoxHeight) / 2,

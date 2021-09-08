@@ -22,6 +22,12 @@ export interface BaseTask {
   name: string;
 }
 
+export interface PerennialTaskStats {
+  id: string;
+  lastCompleted?: moment.Moment;
+  numComplete: number;
+}
+
 export interface MileStone extends BaseTask {
   isComplete?: boolean;
 }
@@ -37,8 +43,13 @@ export interface Perennial extends BaseTask {
   name: string;
   parent?: BaseTask;
   subtasks: Perennial[];
-  frequency?: string; //TODO use value in array?
+  frequency?: Frequency;
   milestones?: MileStone[];
+}
+
+export interface Frequency {
+  recurrences: number;
+  interval: 'day' | 'week' | 'month' | 'year';
 }
 
 export type TabOneParamList = {

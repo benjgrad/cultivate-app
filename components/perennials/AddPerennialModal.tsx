@@ -1,90 +1,113 @@
 import * as React from 'react';
-import { Modal, StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-native';
+import { Text, TextInput } from 'react-native';
 import uuid from 'react-native-uuid';
-import { Perennial } from '../../types';
-import { Dimensions } from 'react-native';
+import { BaseTask, MileStone, Perennial, Frequency } from '../../types';
+import { StyleSheet } from 'react-native';
 import { useRecoilState } from 'recoil';
 import { newPerennial } from '../../recoil/newPerennial';
-const { height } = Dimensions.get('window');
+import { FrequencyPicker } from './FrequencyPicker';
+import { FullscreenModal } from '../common/FullscreenModal';
 
 
 type AddPerennialModalProps = {
-    currentItem?: Perennial;
+
+    currentItem: Perennial;
     modalVisible: boolean;
     setParentModalVisible: () => void;
     addOrUpdatePerennial: (item: Perennial) => void;
 };
 
 const AddPerennialModal: React.FC<AddPerennialModalProps> = (props) => {
-    let { modalVisible, addOrUpdatePerennial } = props;
-    const [isNew, setIsNew] = useRecoilState(newPerennial);
-    const backButtonTxt = isNew ? props.currentItem?.name :
-        !!props.currentItem?.parent?.name ? props.currentItem?.parent?.name : ""
-    return <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible && !!props?.currentItem}
-    >
-        <View style={styles.modalView}>
-            <View style={styles.topNav}>
-                <TouchableOpacity onPress={() => {
-                    if (isNew && !!props.currentItem) {
-                        setIsNew(!isNew);
-                    }
-                    else if (props.setParentModalVisible) {
-                        props.setParentModalVisible();
-                    }
-                }}
-                    style={styles.modalBack}>
-                    <Text style={styles.modalDoneText}>{"<" + backButtonTxt}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.modalDone}
-                    onPress={() => {
-                        if (!isNew && !!props.currentItem) {
-                            addOrUpdatePerennial(props.currentItem);
-                        }
-                        else {
-                            addOrUpdatePerennial({
-                                id: uuid.v4(),
-                                name: "Dips",
-                                subtasks: [], //TODO populate with real data
-                            } as Perennial);
-                        }
-                    }}
-                >
-                    <Text style={styles.modalDoneText}>Done</Text>
-                </TouchableOpacity>
-            </View>
-            {isNew && <TextInput
-                style={[styles.inputRow, styles.nameTextField]}
-                placeholder={"Name"} />}
-            {!isNew && props.currentItem && <TextInput
-                style={[styles.inputRow, styles.nameTextField]}
-                placeholder={"Name"} value={props.currentItem.name} />}
-            <TextInput
-                style={[styles.inputRow, styles.nameTextField]}
-                value={"Once per week"} />
-            <Text style={styles.textInputLabel}>Category</Text>
-            <TextInput
-                style={[styles.inputRow, styles.nameTextField]}
-                placeholder={"Name"}
-                value={"Social"} />
-            <Text style={styles.textInputLabel}>Milestones</Text>
-            <TextInput
-                style={[styles.inputRow, styles.nameTextField]}
-                placeholder={"Name"} />
-            <TextInput
-                style={[styles.inputRow, styles.nameTextField]}
-                placeholder={"Name"} />
-        </View>
+    const { modalVisible, addOrUpdatePerennial, currentItem } = props;
 
-    </Modal >;
+    const [isNew, setIsNew] = useRecoilState(newPerennial);
+
+    const [name, setName] = React.useState("");
+    const [frequency, setFrequency] = React.useState(!!currentItem.frequency ? currentItem.frequency :
+        {
+            recurrences: 1,
+            numIntervals: 1,
+            interval: 'day'
+        } as Frequency);
+    const [milestones, setMilestones] = React.useState([] as MileStone[] | undefined);
+    const [parent, setParent] = React.useState(currentItem as BaseTask | undefined);
+    const [subtasks, setSubtaks] = React.useState([] as Perennial[]);
+
+    React.useEffect(() => {
+        if (isNew) {
+            setName("");
+            setFrequency({ recurrences: 1, interval: 'day' } as Frequency);
+            setMilestones([]);
+            setSubtaks([]);
+        }
+        else {
+            setParent(currentItem.parent);
+            setSubtaks(currentItem.subtasks);
+            setName(currentItem.name);
+            setFrequency(!!currentItem.frequency ? currentItem.frequency : { recurrences: 1, interval: 'day' });
+            setMilestones(currentItem.milestones);
+        }
+    }, [isNew]);
+
+    const parentName = isNew ? currentItem?.name :
+        !!currentItem?.parent?.name ? currentItem?.parent?.name : ""
+
+    return <FullscreenModal
+        modalVisible={modalVisible}
+        backMsg={parentName}
+        backBtn={() => {
+            if (isNew) {
+                setName(currentItem.name);
+                setFrequency(!!currentItem.frequency ? currentItem.frequency : { recurrences: 1, interval: 'day' });
+                setMilestones(currentItem.milestones);
+                setIsNew(!isNew);
+            }
+            else if (props.setParentModalVisible) {
+                props.setParentModalVisible();
+            }
+        }}
+        doneBtn={() => {
+            addOrUpdatePerennial({
+                id: !isNew ? currentItem.id : uuid.v4(),
+                name: name,
+                milestones: milestones,
+                frequency: frequency,
+                parent: parent,
+                subtasks: subtasks,
+            } as Perennial);
+        }} >
+        <TextInput
+            style={[styles.inputRow, styles.nameTextField]}
+            placeholder={"Name"}
+            onChangeText={setName}
+            value={name} />
+        {(!subtasks || subtasks.length == 0) &&
+            <FrequencyPicker
+                backMsg={name}
+                frequency={frequency}
+                setFrequency={(f: Frequency) => {
+                    setFrequency(f);
+                }} />}
+        <Text style={styles.textInputLabel}>Category</Text>
+        <TextInput //TODO Replace with a category picker
+            style={[styles.inputRow, styles.nameTextField]}
+            placeholder={"-"}
+            value={parentName} />
+        <Text style={styles.textInputLabel}>Milestones</Text>
+        <TextInput //TODO Replace with Milestone editor
+            style={[styles.inputRow, styles.nameTextField]}
+            placeholder={"Name"} />
+        <TextInput
+            style={[styles.inputRow, styles.nameTextField]}
+            placeholder={"Name"} />
+        {/* TODO Delete item */}
+    </FullscreenModal>;
+
 }
 
 export default AddPerennialModal;
 
-const modalTop = 20;
+
 const styles = StyleSheet.create({
     textInputLabel: {
         fontSize: 20,
@@ -102,61 +125,5 @@ const styles = StyleSheet.create({
         height: 50,
         fontSize: 20,
         top: 10
-    },
-    modalView: {
-        marginTop: 60,
-        height: height - modalTop,
-        backgroundColor: "white",
-        borderRadius: 20,
-        paddingHorizontal: 35,
-        paddingVertical: 15,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 10,
-        elevation: 5
-    },
-    topNav: {
-        flexDirection: "row",
-    },
-    modalDone: {
-        flex: 12,
-        marginRight: -15
-    },
-    modalDoneText: {
-        color: "#000000",
-        fontSize: 16
-    },
-    modalBack: {
-        flex: 85,
-        marginLeft: -15,
-    },
-
-
-    button: {
-        borderRadius: 20,
-        padding: 10,
-        elevation: 2
-    },
-    buttonOpen: {
-        backgroundColor: "#F194FF",
-    },
-    buttonClose: {
-        backgroundColor: "#2196F3",
-    },
-    textStyle: {
-        color: "white",
-        fontWeight: "bold",
-    },
-    modalText: {
-        marginBottom: 15,
-    },
-    separator: {
-        marginVertical: 30,
-        height: 1,
-        width: '80%',
     },
 });

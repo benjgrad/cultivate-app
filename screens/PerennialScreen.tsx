@@ -11,6 +11,115 @@ import AddPerennialModal from '../components/perennials/AddPerennialModal';
 export const perennialData = [
     {
         id: uuid.v4(),
+        name: "App development",
+        subtasks: [
+            {
+                id: uuid.v4(),
+                name: "Today Screen",
+                milestones: [
+                    {
+                        id: uuid.v4(),
+                        name: "Prioritize tasks",
+                        isComplete: false,
+                    },
+                    {
+                        id: uuid.v4(),
+                        name: "Add task modal",
+                        isComplete: false,
+                    },
+                    {
+                        id: uuid.v4(),
+                        name: "Schedule time modal",
+                        isComplete: false,
+                    },
+                    {
+                        id: uuid.v4(),
+                        name: "Swipe threshold handler",
+                        isComplete: false,
+                    },
+                ],
+            },
+            {
+                id: uuid.v4(),
+                name: "Perennials Screen",
+                milestones: [
+                    {
+                        id: uuid.v4(),
+                        name: "Prioritize perennials",
+                        isComplete: false,
+                    },
+                    {
+                        id: uuid.v4(),
+                        name: "Milestones editor",
+                        isComplete: false,
+                    },
+                    {
+                        id: uuid.v4(),
+                        name: "Delete item",
+                        isComplete: false,
+                    },
+                    {
+                        id: uuid.v4(),
+                        name: "Hide completed tasks",
+                        isComplete: false,
+                    },
+                    {
+                        id: uuid.v4(),
+                        name: "Category picker",
+                        isComplete: false,
+                    },
+                    {
+                        id: uuid.v4(),
+                        name: "Category picker",
+                        isComplete: false,
+                    },
+                ],
+            },
+            {
+                id: uuid.v4(),
+                name: "Annuals Screen",
+                milestones: [
+                    {
+                        id: uuid.v4(),
+                        name: "Read device calendar",
+                        isComplete: false,
+                    },
+                    {
+                        id: uuid.v4(),
+                        name: "Display upcoming events",
+                        isComplete: false,
+                    },
+                    {
+                        id: uuid.v4(),
+                        name: "Display subtasks",
+                        isComplete: false,
+                    },
+                    {
+                        id: uuid.v4(),
+                        name: "Create time to complete editor",
+                        isComplete: false,
+                    },
+                    {
+                        id: uuid.v4(),
+                        name: "Display subtasks in modal",
+                        isComplete: false,
+                    },
+                    {
+                        id: uuid.v4(),
+                        name: "Create add subtask modal",
+                        isComplete: false,
+                    },
+                    {
+                        id: uuid.v4(),
+                        name: "Create add event modal",
+                        isComplete: false,
+                    },
+                ],
+            },
+        ]
+    },
+    {
+        id: uuid.v4(),
         name: "Fitness",
         subtasks: [
             {
@@ -94,11 +203,17 @@ export default function PerennialScreen() {
                 data={perennialData}
                 renderItem={({ item }: { item: Perennial }) =>
                     <PerennialItem
-                        setParentModalVisible={() => { setModalVisible(!modalVisible); }}
+                        setParentModalVisible={() => { }}
                         addOrUpdatePerennial={addOrUpdatePerennial}
                         {...item} />}
                 keyExtractor={(item: Perennial) => item.id} />
             <AddPerennialModal
+                currentItem={({
+                    id: uuid.v4(),
+                    name: "",
+                    milestones: [],
+                    subtasks: [],
+                } as Perennial)}
                 modalVisible={modalVisible}
                 addOrUpdatePerennial={addOrUpdatePerennial}
                 setParentModalVisible={() => {
