@@ -10,12 +10,13 @@ export type RootStackParamList = {
   NotFound: undefined;
 };
 
+export type PerennialVoidFn = (item: Perennial) => void;
+
 export type BottomTabParamList = {
   Annuals: undefined;
   Today: undefined;
-  Perennials: undefined
+  Perennials: undefined;
 };
-
 
 export interface BaseTask {
   id: string;
@@ -49,7 +50,7 @@ export interface Perennial extends BaseTask {
 
 export interface Frequency {
   recurrences: number;
-  interval: 'day' | 'week' | 'month' | 'year';
+  interval: "day" | "week" | "month" | "year";
 }
 
 export type TabOneParamList = {
