@@ -1,11 +1,12 @@
 import * as React from "react";
-import { FlatList, Pressable } from "react-native";
+import { Alert, AsyncStorage, FlatList, Pressable } from "react-native";
 import MainLayout from "../components/MainLayout";
 import uuid from "react-native-uuid";
 import { Frequency, Perennial, PerennialSaveFn } from "../types";
 import { PerennialItem } from "../components/perennials/PerennialItems";
 import AddPerennialModal from "../components/perennials/AddPerennialModal";
 import { PerennialContext } from "../components/PerennialContext";
+import { storeData, getStoredData, storeItem, removeItem } from "./PerennnialStorage";
 
 const testVals = [
   {
@@ -177,20 +178,22 @@ const testVals = [
 ] as Perennial[];
 
 export default function PerennialScreen() {
-  const [modalVisible, setModalVisible] = React.useState(false);
-
   const defaultFn = (item: Perennial) => { };
 
+  React.useEffect(() => { getStoredData(setPerennialData); }, []);
+
+  const [modalVisible, setModalVisible] = React.useState(false);
   const [currentItem, setCurrentItem] = React.useState<Perennial>({ id: "", name: "" } as Perennial);
   const [saveCurrentItem, setSaveCurrentItem] = React.useState<PerennialSaveFn>(defaultFn);
   const [openParentAction, setOpenParentAction] = React.useState<() => void>(() => { });
-  const [perennialData, setPerennialData] = React.useState<Perennial[]>(testVals);
+  const [perennialData, setPerennialData] = React.useState<Perennial[]>([]);
 
   const setCurrentPerennial = (
     newItem: Perennial,
     saveCurrentItem: PerennialSaveFn,
     setParentAsCurrent: () => void
   ) => {
+    setModalVisible(true);
     setCurrentItem(newItem);
     setSaveCurrentItem(() => saveCurrentItem);
     setOpenParentAction(() => setParentAsCurrent)
@@ -202,17 +205,21 @@ export default function PerennialScreen() {
       i = iter;
       return item.id == elem.id;
     });
+    let newData = perennialData;
     if (!!found) {
       if (action == 'delete') {
-        const newData = perennialData;
+        removeItem(item);
         newData.splice(i, 1);
-        setPerennialData(newData);
       } else {
-        perennialData[i] = item;
+        newData.splice(i, 1, item)
+        storeItem(item);
       }
     } else {
-      setPerennialData([...perennialData, item]);
+      newData = [...perennialData, item];
+      storeItem(item);
     }
+    storeData(newData);
+    setPerennialData(newData);
     setModalVisible(false);
   };
 
@@ -228,14 +235,12 @@ export default function PerennialScreen() {
           subtasks: [],
         };
         setCurrentPerennial(newItem, saveChild, () => setModalVisible(false));
-        setModalVisible(!modalVisible);
       }}
     >
       <PerennialContext.Provider
         value={{
           currentItem,
           saveCurrentItem,
-          openModal: setModalVisible,
           setCurrentItem: setCurrentPerennial,
           setParentAsCurrent: openParentAction
         }}

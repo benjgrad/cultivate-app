@@ -31,21 +31,21 @@ export default function BottomTabNavigator() {
         name="Annuals"
         component={Annuals}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="leaf" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="leaf-outline" color={color} />,
         }}
       />
       <BottomTab.Screen
         name="Today"
         component={TodayScreen}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="home-outline" color={color} />,
         }}
       />
       <BottomTab.Screen
         name="Perennials"
         component={Perennials}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="paper-plane" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="rose-outline" color={color} />,
         }}
       />
     </BottomTab.Navigator>

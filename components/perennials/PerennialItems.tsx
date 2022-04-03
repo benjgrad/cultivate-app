@@ -6,6 +6,7 @@ import { BaseTask, Frequency, MileStone, Perennial, PerennialSaveFn } from "../.
 import { Ionicons } from "@expo/vector-icons";
 import { MileStoneItem } from "./MilestoneProps";
 import { PerennialContext } from "../PerennialContext";
+import { removeItem, storeItem } from "../../screens/PerennnialStorage";
 
 interface PerennialItemProps extends Perennial {
     propogateChange: PerennialSaveFn;
@@ -18,11 +19,12 @@ export const PerennialItem: React.FC<PerennialItemProps> = (props) => {
     const perennialContext = React.useContext(PerennialContext);
 
     const thisItem = props as Perennial;
-    const setCurrentItem = perennialContext.setCurrentItem;
 
     const addSubtask = (item: Perennial) => {
-        thisItem.subtasks.push(item);
-        saveThisPerennial(thisItem, 'save');
+        storeItem(item);
+        let subtasks = thisItem.subtasks || [];
+        subtasks.push(item);
+        saveThisPerennial({ ...thisItem, subtasks }, 'save');
     }
 
     const toggleMilestoneComplete = (id: string) => {
@@ -41,6 +43,12 @@ export const PerennialItem: React.FC<PerennialItemProps> = (props) => {
     const saveThisPerennial = (item: Perennial, action: 'save' | 'delete' = 'save') => {
         //Update the current perennial
         if (item.id == thisItem.id) {
+            if (action == 'delete') {
+                removeItem(item);
+            }
+            else {
+                storeItem(item);
+            }
             props.propogateChange(item, action);
         } else {
             //Add to subtasks if none are found
@@ -68,10 +76,14 @@ export const PerennialItem: React.FC<PerennialItemProps> = (props) => {
                 }
             }
             //propogate changes to parent
+            storeItem(thisItem);
             props.propogateChange(thisItem, 'save');
         }
     };
 
+    const setThisToCurrent = () => {
+        perennialContext.setCurrentItem(thisItem, saveThisPerennial, props.setParentAsCurrent);
+    };
     return (
         <>
             <View style={styles.box}>
@@ -79,8 +91,7 @@ export const PerennialItem: React.FC<PerennialItemProps> = (props) => {
                     <TouchableOpacity
                         onPress={() => {
                             //Edit thisItem
-                            setCurrentItem(thisItem, saveThisPerennial, props.setParentAsCurrent);
-                            perennialContext.openModal(true);
+                            perennialContext.setCurrentItem(thisItem, saveThisPerennial, props.setParentAsCurrent);
                         }}
                     >
                         <Text style={styles.name}>{props.name}</Text>
@@ -90,13 +101,13 @@ export const PerennialItem: React.FC<PerennialItemProps> = (props) => {
                     onPress={() => {
                         const newItem: Perennial = {
                             id: uuid.v4().toString(),
+                            parent: thisItem.id,
                             name: "",
                             milestones: [],
                             frequency: { recurrences: 1, interval: "week" } as Frequency,
                             subtasks: [],
                         };
-                        setCurrentItem(newItem, addSubtask, props.setParentAsCurrent);
-                        perennialContext.openModal(true);
+                        perennialContext.setCurrentItem(newItem, addSubtask, setThisToCurrent);
                     }}
                 >
                     <Ionicons style={styles.addSubtask} size={checkBoxHeight} name="add" />
@@ -106,13 +117,10 @@ export const PerennialItem: React.FC<PerennialItemProps> = (props) => {
                 {props.subtasks &&
                     props.subtasks.map((subtask) => (
                         <PerennialItem
-                            setParentAsCurrent={() => {
-                                setCurrentItem(thisItem, saveThisPerennial, props.setParentAsCurrent)
-                                perennialContext.openModal(true);
-                            }}
+                            setParentAsCurrent={setThisToCurrent}
                             propogateChange={saveThisPerennial}
                             key={subtask.id}
-                            {...{ ...subtask, parent: thisItem as BaseTask }}
+                            {...{ ...subtask, parent: thisItem.id }}
                         />
                     ))}
                 {props.milestones &&

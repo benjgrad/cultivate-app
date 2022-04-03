@@ -5,6 +5,7 @@ import { StyleSheet } from "react-native";
 import { FrequencyPicker } from "./FrequencyPicker";
 import { FullscreenModal } from "../common/FullscreenModal";
 import { PerennialContext } from "../PerennialContext";
+import { getStoredItem } from "../../screens/PerennnialStorage";
 
 type ModalProps = {
   modalVisible: boolean,
@@ -19,19 +20,26 @@ const AddPerennialModal: React.FC<ModalProps> = (props) => {
   const [currentItem, setCurrentItem] = React.useState<Perennial>(perennialContext.currentItem);
   React.useEffect(
     () => setCurrentItem(perennialContext.currentItem),
-    [perennialContext.currentItem])
+    [perennialContext.currentItem.id, perennialContext.currentItem.parent])
 
-  if (!currentItem.frequency) {
-    setCurrentItem({
-      ...currentItem, frequency: {
-        recurrences: 1,
-        numIntervals: 1,
-        interval: "day",
-      } as Frequency
-    });
-  }
+  const [parentName, setParentName] = React.useState<string>("");
 
-  const parentName = currentItem.parent?.name ? currentItem.parent.name : "";
+  React.useEffect(() => {
+    if (currentItem.parent) {
+      getStoredItem(currentItem.parent, (parent: Perennial) => setParentName(parent.name));
+    } else {
+      setParentName("");
+    }
+    if (!currentItem.frequency) {
+      setCurrentItem({
+        ...currentItem, frequency: {
+          recurrences: 1,
+          numIntervals: 1,
+          interval: "day",
+        } as Frequency
+      });
+    }
+  }, [perennialContext.currentItem.id, currentItem.id])
 
   return (
     <FullscreenModal

@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
         width: checkBoxHeight,
         height: checkBoxHeight,
         borderRadius: 20,
-        borderColor: 'black', //TODO theme
+        borderColor: 'black',
         borderWidth: 3,
         position: 'absolute',
         right: 15,
