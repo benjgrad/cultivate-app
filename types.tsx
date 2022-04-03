@@ -10,7 +10,7 @@ export type RootStackParamList = {
   NotFound: undefined;
 };
 
-export type PerennialVoidFn = (item: Perennial) => void;
+export type PerennialSaveFn = (item: Perennial, action: 'save' | 'delete') => void;
 
 export type BottomTabParamList = {
   Annuals: undefined;

@@ -2,24 +2,33 @@ import * as React from "react";
 import { Text, TextInput, TouchableOpacity } from "react-native";
 import { BaseTask, MileStone, Perennial, Frequency } from "../../types";
 import { StyleSheet } from "react-native";
-import { useRecoilState } from "recoil";
 import { FrequencyPicker } from "./FrequencyPicker";
 import { FullscreenModal } from "../common/FullscreenModal";
-import { perennialModalOpen } from "../../recoil/perennialModalOpen";
 import { PerennialContext } from "../PerennialContext";
 
-const AddPerennialModal: React.FC = () => {
-  const [modalVisible, setModalVisible] = useRecoilState(perennialModalOpen);
+type ModalProps = {
+  modalVisible: boolean,
+  setModalVisible: (visible: boolean) => void;
+}
+
+const AddPerennialModal: React.FC<ModalProps> = (props) => {
+  const { modalVisible, setModalVisible } = props;
+
   const perennialContext = React.useContext(PerennialContext);
 
-  const currentItem = perennialContext.currentItem;
+  const [currentItem, setCurrentItem] = React.useState<Perennial>(perennialContext.currentItem);
+  React.useEffect(
+    () => setCurrentItem(perennialContext.currentItem),
+    [perennialContext.currentItem])
 
   if (!currentItem.frequency) {
-    currentItem.frequency = {
-      recurrences: 1,
-      numIntervals: 1,
-      interval: "day",
-    } as Frequency;
+    setCurrentItem({
+      ...currentItem, frequency: {
+        recurrences: 1,
+        numIntervals: 1,
+        interval: "day",
+      } as Frequency
+    });
   }
 
   const parentName = currentItem.parent?.name ? currentItem.parent.name : "";
@@ -28,9 +37,9 @@ const AddPerennialModal: React.FC = () => {
     <FullscreenModal
       modalVisible={modalVisible}
       backMsg={parentName}
-      backBtn={perennialContext.openParentModal}
+      backBtn={perennialContext.setParentAsCurrent}
       doneBtn={() => {
-        perennialContext.savePerennial(currentItem);
+        perennialContext.saveCurrentItem(currentItem, 'save');
         setModalVisible(!modalVisible);
       }}
     >
@@ -38,7 +47,7 @@ const AddPerennialModal: React.FC = () => {
         style={[styles.inputRow, styles.nameTextField]}
         placeholder={"Name"}
         onChangeText={(name: string) => {
-          currentItem.name = name;
+          setCurrentItem({ ...currentItem, name });
         }}
         value={currentItem.name}
       />
@@ -47,7 +56,7 @@ const AddPerennialModal: React.FC = () => {
           backMsg={currentItem.name}
           frequency={currentItem.frequency ? currentItem.frequency : { recurrences: 1, interval: "week" }}
           setFrequency={(f: Frequency) => {
-            currentItem.frequency = f;
+            setCurrentItem({ ...currentItem, frequency: f });
           }}
         />
       )}
@@ -66,7 +75,7 @@ const AddPerennialModal: React.FC = () => {
 
       <TouchableOpacity
         onPress={() => {
-          perennialContext.deletePerennial(currentItem);
+          perennialContext.saveCurrentItem(currentItem, 'delete');
           setModalVisible(!modalVisible);
         }}
       >

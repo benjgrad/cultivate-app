@@ -2,12 +2,12 @@ import * as React from "react";
 import { FlatList, Pressable } from "react-native";
 import MainLayout from "../components/MainLayout";
 import uuid from "react-native-uuid";
-import { Perennial, PerennialVoidFn } from "../types";
+import { Frequency, Perennial, PerennialSaveFn } from "../types";
 import { PerennialItem } from "../components/perennials/PerennialItems";
 import AddPerennialModal from "../components/perennials/AddPerennialModal";
 import { PerennialContext } from "../components/PerennialContext";
 
-export const perennialData = [
+const testVals = [
   {
     id: uuid.v4(),
     name: "App development",
@@ -179,35 +179,39 @@ export const perennialData = [
 export default function PerennialScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);
 
-  const defaultFn = (item: Perennial) => {};
+  const defaultFn = (item: Perennial) => { };
 
   const [currentItem, setCurrentItem] = React.useState<Perennial>({ id: "", name: "" } as Perennial);
-  const [openParentModal, setOpenParentModal] = React.useState<() => void>(() => {});
-  const [savePerennial, setSavePerennial] = React.useState<PerennialVoidFn>(defaultFn);
-  const [deletePerennial, setDeletePerennial] = React.useState<PerennialVoidFn>(defaultFn);
+  const [saveCurrentItem, setSaveCurrentItem] = React.useState<PerennialSaveFn>(defaultFn);
+  const [openParentAction, setOpenParentAction] = React.useState<() => void>(() => { });
+  const [perennialData, setPerennialData] = React.useState<Perennial[]>(testVals);
 
   const setCurrentPerennial = (
     newItem: Perennial,
-    parentModalOpener: () => void,
-    perennialSaver: PerennialVoidFn,
-    perennialDeleter: PerennialVoidFn
+    saveCurrentItem: PerennialSaveFn,
+    setParentAsCurrent: () => void
   ) => {
     setCurrentItem(newItem);
-    setOpenParentModal(parentModalOpener);
-    setSavePerennial(perennialSaver);
-    setDeletePerennial(perennialDeleter);
+    setSaveCurrentItem(() => saveCurrentItem);
+    setOpenParentAction(() => setParentAsCurrent)
   };
 
-  const addOrUpdatePerennial = (item: Perennial) => {
+  const saveChild = (item: Perennial, action: 'save' | 'delete') => {
     let i = 0;
     const found = perennialData.find((elem: Perennial, iter: number) => {
       i = iter;
       return item.id == elem.id;
     });
     if (!!found) {
-      perennialData[i] = item;
+      if (action == 'delete') {
+        const newData = perennialData;
+        newData.splice(i, 1);
+        setPerennialData(newData);
+      } else {
+        perennialData[i] = item;
+      }
     } else {
-      perennialData.push(item);
+      setPerennialData([...perennialData, item]);
     }
     setModalVisible(false);
   };
@@ -216,26 +220,37 @@ export default function PerennialScreen() {
     <MainLayout
       title={"Perennials"}
       addAction={() => {
+        const newItem: Perennial = {
+          id: uuid.v4().toString(),
+          name: "",
+          milestones: [],
+          frequency: { recurrences: 1, interval: "week" } as Frequency,
+          subtasks: [],
+        };
+        setCurrentPerennial(newItem, saveChild, () => setModalVisible(false));
         setModalVisible(!modalVisible);
       }}
     >
       <PerennialContext.Provider
         value={{
           currentItem,
-          savePerennial,
-          deletePerennial,
-          openParentModal,
+          saveCurrentItem,
+          openModal: setModalVisible,
           setCurrentItem: setCurrentPerennial,
+          setParentAsCurrent: openParentAction
         }}
       >
         <FlatList
           data={perennialData}
           renderItem={({ item }: { item: Perennial }) => (
-            <PerennialItem parentModalOpener={() => {}} addOrUpdatePerennial={addOrUpdatePerennial} {...item} />
+            <PerennialItem
+              setParentAsCurrent={() => setModalVisible(false)}
+              propogateChange={saveChild}
+              {...item} />
           )}
           keyExtractor={(item: Perennial) => item.id}
         />
-        <AddPerennialModal />
+        <AddPerennialModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
       </PerennialContext.Provider>
     </MainLayout>
   );
