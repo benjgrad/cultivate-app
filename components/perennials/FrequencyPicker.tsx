@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Text, StyleSheet, View, TouchableOpacity, TextInput, Picker } from 'react-native';
+import { Text, View, TouchableOpacity, TextInput, Picker } from 'react-native';
+import { useStyles } from '../../Styles';
 import { Frequency } from '../../types';
 import { FullscreenModal } from '../common/FullscreenModal';
 
@@ -9,6 +10,7 @@ type FrequencyPickerProps = {
     setFrequency: (f: Frequency) => void;
 };
 export const FrequencyPicker: React.FC<FrequencyPickerProps> = (props) => {
+    const styles = useStyles();
     const { recurrences: occurrences, interval } = props.frequency;
     const [modalVisible, setModalVisible] = React.useState(false);
 
@@ -59,35 +61,3 @@ export const FrequencyPicker: React.FC<FrequencyPickerProps> = (props) => {
         </FullscreenModal>
     </>;
 };
-
-const styles = StyleSheet.create({
-    freqPickerTxt: {
-        top: 10,
-        fontSize: 20,
-        textAlign: 'center'
-    },
-    picker: {
-        height: 50,
-        flex: 1
-    },
-    frequencyMsg: {
-        height: 50,
-        fontSize: 20,
-        top: 10,
-        flex: 1,
-        justifyContent: 'center',
-    },
-    inputRow: {
-        textAlign: 'center',
-        height: 50,
-        borderWidth: 1,
-        borderRadius: 10,
-        marginVertical: 10,
-        paddingHorizontal: 10
-    },
-    nameTextField: {
-        height: 50,
-        fontSize: 20,
-        top: 10,
-    }
-});

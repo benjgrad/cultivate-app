@@ -1,42 +1,8 @@
 import * as React from 'react';
-import { Modal, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { Dimensions } from 'react-native';
-const { height } = Dimensions.get('window');
+import { Modal, View, Text, TouchableOpacity } from 'react-native';
+import { useStyles } from '../../Styles';
 
-const modalTop = 20;
-const styles = StyleSheet.create({
-    modalView: {
-        marginTop: 60,
-        height: height - modalTop,
-        backgroundColor: "white",
-        borderRadius: 20,
-        paddingHorizontal: 35,
-        paddingVertical: 15,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 10,
-        elevation: 5
-    },
-    topNav: {
-        flexDirection: "row",
-    },
-    modalDone: {
-        flex: 12,
-        marginRight: -15
-    },
-    modalDoneText: {
-        color: "#000000",
-        fontSize: 16
-    },
-    modalBack: {
-        flex: 85,
-        marginLeft: -15,
-    },
-});
+
 type FullscreenModalProps = {
     modalVisible: boolean;
     backMsg: string;
@@ -44,6 +10,7 @@ type FullscreenModalProps = {
     doneBtn: () => void;
 };
 export const FullscreenModal: React.FC<FullscreenModalProps> = (props) => {
+    const styles = useStyles();
     const { modalVisible, backMsg, backBtn, doneBtn } = props;
     return <Modal
         animationType="slide"

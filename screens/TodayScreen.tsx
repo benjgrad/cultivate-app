@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SafeAreaView, StyleSheet, ViewPropsIOS } from 'react-native';
+import { SafeAreaView, ViewPropsIOS } from 'react-native';
 import MainLayout from '../components/MainLayout';
 
 import { TodayTask } from '../types'

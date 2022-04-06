@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { StyleSheet } from 'react-native';
 import MainLayout from '../components/MainLayout';
 
 import { Text, View } from '../components/Themed';
@@ -19,12 +18,3 @@ export default function AnnualScreen() {
 }
 
 
-
-const styles = StyleSheet.create({
-
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});

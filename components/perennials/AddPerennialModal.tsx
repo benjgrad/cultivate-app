@@ -1,11 +1,11 @@
 import * as React from "react";
 import { Text, TextInput, TouchableOpacity } from "react-native";
 import { BaseTask, MileStone, Perennial, Frequency } from "../../types";
-import { StyleSheet } from "react-native";
 import { FrequencyPicker } from "./FrequencyPicker";
 import { FullscreenModal } from "../common/FullscreenModal";
 import { PerennialContext } from "../PerennialContext";
 import { getStoredItem } from "../../screens/PerennnialStorage";
+import { useStyles } from "../../Styles";
 
 type ModalProps = {
   modalVisible: boolean,
@@ -13,6 +13,7 @@ type ModalProps = {
 }
 
 const AddPerennialModal: React.FC<ModalProps> = (props) => {
+  const styles = useStyles();
   const { modalVisible, setModalVisible } = props;
 
   const perennialContext = React.useContext(PerennialContext);
@@ -94,26 +95,3 @@ const AddPerennialModal: React.FC<ModalProps> = (props) => {
 };
 
 export default AddPerennialModal;
-
-const styles = StyleSheet.create({
-  textInputLabel: {
-    fontSize: 20,
-    top: 20,
-    marginBottom: 5,
-  },
-  inputRow: {
-    height: 50,
-    borderWidth: 1,
-    borderRadius: 10,
-    marginVertical: 10,
-    paddingHorizontal: 10,
-  },
-  nameTextField: {
-    height: 50,
-    fontSize: 20,
-    top: 10,
-  },
-  deleteBtn: {
-    color: "red",
-  },
-});

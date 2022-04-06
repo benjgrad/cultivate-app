@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { StyleSheet } from 'react-native';
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 
@@ -107,10 +106,5 @@ const SwipeItem: React.FC<SwipeItemProps> = (props) => {
             </Animated.View>
         </PanGestureHandler>);
 }
-
-
-const styles = StyleSheet.create({
-
-});
 
 export default SwipeItem;
