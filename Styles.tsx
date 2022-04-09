@@ -76,6 +76,10 @@ export function useStyles(): any {
         name: {
             fontSize: 20,
         },
+        milestone: {
+            fontSize: 20,
+            width: '90%'
+        },
         time: {},
         modalDelete: {
             width: checkBoxHeight,
@@ -186,7 +190,7 @@ export function useStyles(): any {
         },
         milstoneItem: {
             fontSize: 20,
-            width: '80%'
+            width: '70%'
         },
         milestoneEditContainer: {
             marginTop: 24,

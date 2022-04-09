@@ -5,6 +5,7 @@ import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { checkBoxHeight, deleteItemHeight, useStyles } from '../../Styles';
 import { Milestone as Milestone } from '../../types'
 import { Ionicons } from '@expo/vector-icons';
+import { Divider } from '@material-ui/core';
 
 type MilestoneEditorProps = {
     milestones: Milestone[];
@@ -44,13 +45,13 @@ export const MilestoneEditor: React.FC<MilestoneEditorProps> = (props) => {
         props.onChange(milstones);
     }
 
-    const milstones = props.milestones.map(m => {
-        return <MilestoneEntry key={m.id} {...{ ...m, onChange: updateMilestones }} />
+    let milestones = props.milestones.map(m => {
+        return <><MilestoneEntry key={m.id} {...{ ...m, onChange: updateMilestones }} /></>
     })
     //TODO Add buttons
     return (<>
         <View style={styles.milestoneEditContainer}>
-            {milstones}
+            {milestones}
         </View>
         <TouchableOpacity style={styles.centerItems} onPress={addMilestone}>
             <Ionicons size={24} name="add" />

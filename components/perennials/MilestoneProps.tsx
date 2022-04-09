@@ -18,7 +18,7 @@ export const MileStoneItem: React.FC<MilestoneProps> = (props) => {
     return (
         <View style={styles.box}>
             <View style={styles.textContainer}>
-                <Text style={styles.name}>{props.name}</Text>
+                <Text style={styles.milestone}>{props.name}</Text>
             </View>
             <TouchableOpacity onPress={() => {
                 setIsComplete(!isComplete);
