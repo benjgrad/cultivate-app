@@ -170,7 +170,7 @@ export function useStyles(): any {
         },
         deleteBtn: {
             alignItems: 'center',
-            marginTop: 40,
+            marginTop: '90%',
         },
         deleteBtnText: {
             color: "red",
@@ -186,7 +186,7 @@ export function useStyles(): any {
         },
         milstoneItem: {
             fontSize: 20,
-            width: '90%'
+            width: '80%'
         },
         milestoneEditContainer: {
             marginTop: 24,

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Text, View } from "react-native";
 import uuid from "react-native-uuid";
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
-import { deleteItemHeight, useStyles } from '../../Styles';
+import { checkBoxHeight, deleteItemHeight, useStyles } from '../../Styles';
 import { Milestone as Milestone } from '../../types'
 import { Ionicons } from '@expo/vector-icons';
 
@@ -76,10 +76,10 @@ const MilestoneEntry: React.FC<MilestoneEntryProps> = (props) => {
                 onChangeText={(val: string) => props.onChange({ ...props, name: val })}
             />
         </View>
-        <TouchableOpacity style={styles.modalDelete} onPress={() => {
-            props.onChange(props, 'delete');
-        }}>
-            <Ionicons size={deleteItemHeight} name="close" />
-        </TouchableOpacity>
+        <View style={styles.modalDelete}>
+            <TouchableOpacity onPress={() => props.onChange(props, 'delete')}>
+                <Ionicons size={deleteItemHeight} name="close" />
+            </TouchableOpacity>
+        </View>
     </View>);
 }
