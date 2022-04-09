@@ -1,11 +1,12 @@
 import * as React from "react";
-import { Text, TextInput, TouchableOpacity } from "react-native";
-import { BaseTask, MileStone, Perennial, Frequency } from "../../types";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Milestone, Perennial, Frequency } from "../../types";
 import { FrequencyPicker } from "./FrequencyPicker";
 import { FullscreenModal } from "../common/FullscreenModal";
 import { PerennialContext } from "../PerennialContext";
 import { getStoredItem } from "../../screens/PerennnialStorage";
 import { useStyles } from "../../Styles";
+import { MilestoneEditor } from "./MilestoneEditor";
 
 type ModalProps = {
   modalVisible: boolean,
@@ -18,20 +19,28 @@ const AddPerennialModal: React.FC<ModalProps> = (props) => {
 
   const perennialContext = React.useContext(PerennialContext);
 
-  const [currentItem, setCurrentItem] = React.useState<Perennial>(perennialContext.currentItem);
+
+  //TODO figure out why this isn't working
+  const safeClone = (item: Perennial) => {
+    return {
+      ...perennialContext.currentItem, milestones: Object.assign([], perennialContext.currentItem.milestones)
+    };
+  }
+
+  const [currentItem, setCurrentItem] = React.useState<Perennial>({ ...perennialContext.currentItem, milestones: Object.assign([], perennialContext.currentItem.milestones) });
   React.useEffect(
-    () => setCurrentItem(perennialContext.currentItem),
-    [perennialContext.currentItem.id, perennialContext.currentItem.parent])
+    () => setCurrentItem({ ...perennialContext.currentItem, milestones: Object.assign([], perennialContext.currentItem.milestones) }),
+    [perennialContext.currentItem.id, perennialContext.currentItem.parent]);
 
   const [parentName, setParentName] = React.useState<string>("");
 
   React.useEffect(() => {
-    if (currentItem.parent) {
-      getStoredItem(currentItem.parent, (parent: Perennial) => setParentName(parent.name));
+    if (perennialContext.currentItem.parent) {
+      getStoredItem(perennialContext.currentItem.parent, (parent: Perennial) => setParentName(parent.name));
     } else {
       setParentName("");
     }
-    if (!currentItem.frequency) {
+    if (!perennialContext.currentItem.frequency) {
       setCurrentItem({
         ...currentItem, frequency: {
           recurrences: 1,
@@ -40,7 +49,11 @@ const AddPerennialModal: React.FC<ModalProps> = (props) => {
         } as Frequency
       });
     }
-  }, [perennialContext.currentItem.id, currentItem.id])
+  }, [perennialContext.currentItem.id])
+
+  const handleMilestoneChange = (milestones: Milestone[]) => {
+    setCurrentItem({ ...currentItem, milestones });
+  }
 
   return (
     <FullscreenModal
@@ -76,20 +89,20 @@ const AddPerennialModal: React.FC<ModalProps> = (props) => {
         value={parentName}
       />
       <Text style={styles.textInputLabel}>Milestones</Text>
-      <TextInput //TODO Replace with Milestone editor
-        style={[styles.inputRow, styles.nameTextField]}
-        placeholder={"Name"}
+      <MilestoneEditor
+        onChange={(milestones: Milestone[]) => setCurrentItem({ ...currentItem, milestones })}
+        milestones={currentItem.milestones || []}
       />
-      <TextInput style={[styles.inputRow, styles.nameTextField]} placeholder={"Name"} />
-
-      <TouchableOpacity
-        onPress={() => {
-          perennialContext.saveCurrentItem(currentItem, 'delete');
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <Text style={styles.deleteBtn}>{"Delete " + currentItem.name}</Text>
-      </TouchableOpacity>
+      <View style={styles.deleteBtn}>
+        <TouchableOpacity
+          onPress={() => {
+            perennialContext.saveCurrentItem(currentItem, 'delete');
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <Text style={styles.deleteBtnText}>{"Delete " + currentItem.name}</Text>
+        </TouchableOpacity>
+      </View>
     </FullscreenModal>
   );
 };

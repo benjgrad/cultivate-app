@@ -2,7 +2,7 @@ import * as React from "react";
 import { TouchableOpacity } from "react-native";
 import uuid from "react-native-uuid";
 import { Text, View } from "../Themed";
-import { BaseTask, Frequency, MileStone, Perennial, PerennialSaveFn } from "../../types";
+import { BaseTask, Frequency, Milestone, Perennial, PerennialSaveFn } from "../../types";
 import { Ionicons } from "@expo/vector-icons";
 import { MileStoneItem } from "./MilestoneProps";
 import { PerennialContext } from "../PerennialContext";
@@ -29,7 +29,7 @@ export const PerennialItem: React.FC<PerennialItemProps> = (props) => {
 
     const toggleMilestoneComplete = (id: string) => {
         let i = 0;
-        const found = thisItem.milestones?.find((elem: MileStone, iter: number) => {
+        const found = thisItem.milestones?.find((elem: Milestone, iter: number) => {
             i = iter;
             return id == elem.id;
         });

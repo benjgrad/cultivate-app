@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Modal, View, Text, TouchableOpacity } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import { useStyles } from '../../Styles';
 
 
@@ -28,7 +29,9 @@ export const FullscreenModal: React.FC<FullscreenModalProps> = (props) => {
                     <Text style={styles.modalDoneText}>Done</Text>
                 </TouchableOpacity>
             </View>
-            {props.children}
+            <ScrollView style={styles.modalScrollview}>
+                {props.children}
+            </ScrollView>
         </View>
     </Modal>;
 };

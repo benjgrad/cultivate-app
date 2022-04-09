@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { Text, View } from '../Themed';
-import { MileStone } from '../../types';
+import { Milestone } from '../../types';
 import { Ionicons } from '@expo/vector-icons';
 import { useStyles } from '../../Styles';
 
 const itemHeight = 50;
 const checkBoxHeight = 30;
 
-interface MilestoneProps extends MileStone {
+interface MilestoneProps extends Milestone {
     toggleComplete: (id: string) => void;
 };
 export const MileStoneItem: React.FC<MilestoneProps> = (props) => {

@@ -7,6 +7,7 @@ import { PerennialItem } from "../components/perennials/PerennialItems";
 import AddPerennialModal from "../components/perennials/AddPerennialModal";
 import { PerennialContext } from "../components/PerennialContext";
 import { storeData, getStoredData, storeItem, removeItem } from "./PerennnialStorage";
+import { useStyles } from "../Styles";
 
 const testVals = [
   {
@@ -178,13 +179,13 @@ const testVals = [
 ] as Perennial[];
 
 export default function PerennialScreen() {
-  const defaultFn = (item: Perennial) => { };
+  const styles = useStyles();
 
   React.useEffect(() => { getStoredData(setPerennialData); }, []);
 
   const [modalVisible, setModalVisible] = React.useState(false);
   const [currentItem, setCurrentItem] = React.useState<Perennial>({ id: "", name: "" } as Perennial);
-  const [saveCurrentItem, setSaveCurrentItem] = React.useState<PerennialSaveFn>(defaultFn);
+  const [saveCurrentItem, setSaveCurrentItem] = React.useState<PerennialSaveFn>((item: Perennial) => { });
   const [openParentAction, setOpenParentAction] = React.useState<() => void>(() => { });
   const [perennialData, setPerennialData] = React.useState<Perennial[]>([]);
 
@@ -247,6 +248,7 @@ export default function PerennialScreen() {
       >
         <FlatList
           data={perennialData}
+          style={styles.modalScrollview}
           renderItem={({ item }: { item: Perennial }) => (
             <PerennialItem
               setParentAsCurrent={() => setModalVisible(false)}

@@ -29,7 +29,7 @@ export interface PerennialTaskStats {
   numComplete: number;
 }
 
-export interface MileStone extends BaseTask {
+export interface Milestone extends BaseTask {
   isComplete?: boolean;
 }
 
@@ -45,7 +45,7 @@ export interface Perennial extends BaseTask {
   parent?: string;
   subtasks: Perennial[];
   frequency?: Frequency;
-  milestones?: MileStone[];
+  milestones: Milestone[];
 }
 
 export interface Frequency {

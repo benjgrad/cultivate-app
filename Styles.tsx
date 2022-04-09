@@ -4,6 +4,7 @@ import Colors from './constants/Colors';
 import useColorScheme from './hooks/useColorScheme';
 
 export const checkBoxHeight = 30;
+export const deleteItemHeight = 20;
 
 export function useStyles(): any {
 
@@ -19,6 +20,9 @@ export function useStyles(): any {
         main: {
             flex: 1,
             backgroundColor: Colors[colorScheme].background,
+        },
+        centerItems: {
+            alignItems: 'center',
         },
         container: {
             marginHorizontal: 24,
@@ -62,10 +66,24 @@ export function useStyles(): any {
             borderRadius: 15,
             flexDirection: "row",
         },
+        milestoneItemContainer: {
+            height: itemHeight,
+            margin: 5,
+            alignSelf: "stretch",
+            borderRadius: 15,
+            flexDirection: "row",
+        },
         name: {
             fontSize: 20,
         },
         time: {},
+        modalDelete: {
+            width: checkBoxHeight,
+            height: checkBoxHeight,
+            position: "absolute",
+            right: 5,
+            top: (itemHeight - deleteItemHeight) / 2,
+        },
         addSubtask: {
             width: checkBoxHeight,
             height: checkBoxHeight,
@@ -79,7 +97,8 @@ export function useStyles(): any {
             backgroundColor: "white",
             borderRadius: 20,
             paddingHorizontal: 35,
-            paddingVertical: 15,
+            paddingTop: 15,
+            paddingBottom: 80,
             shadowColor: "#000",
             shadowOffset: {
                 width: 0,
@@ -150,12 +169,32 @@ export function useStyles(): any {
             marginBottom: 5,
         },
         deleteBtn: {
+            alignItems: 'center',
+            marginTop: 40,
+        },
+        deleteBtnText: {
             color: "red",
         },
         separator: {
             marginVertical: 30,
             height: 1,
             width: '80%',
+        },
+        modalScrollview: {
+            paddingHorizontal: 30,
+            marginHorizontal: -30
+        },
+        milstoneItem: {
+            fontSize: 20,
+            width: '90%'
+        },
+        milestoneEditContainer: {
+            marginTop: 24,
+            flex: 1,
+        },
+        addMilestoneBtn: {
+            flex: 10,
+            fontSize: 18,
         },
     });
 
