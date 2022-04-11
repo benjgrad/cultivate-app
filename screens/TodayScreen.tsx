@@ -9,6 +9,7 @@ import moment from 'moment';
 import uuid from 'react-native-uuid';
 import SwipeItem from '../components/common/SwipeItem';
 import { TodayItem } from '../components/today/TodayItem';
+import { useStyles } from '../Styles';
 
 
 const taskData = [
@@ -64,18 +65,40 @@ const taskData = [
 ] as TodayTask[];
 
 const TodayScreen: React.FC = () => {
+    const [modalVisible, setMidalVisible] = React.useState<boolean>(false);
+    const [todayItems, setTodayItems] = React.useState<TodayTask[]>(taskData);
+
+    const styles = useStyles();
+
+    const handleComplete = (id: string) => {
+        let i = 0;
+        const found = todayItems?.find((elem: TodayTask, iter: number) => {
+            i = iter;
+            return id == elem.id;
+        });
+        if (!!found) {
+            const todayItem = { ...todayItems[i], isComplete: !todayItems[i].isComplete };
+            let newItems = todayItems.slice();
+            newItems.splice(i, 1, todayItem);
+            setTodayItems(newItems);
+        }
+    }
+
     return (
-        <MainLayout title={moment().format('MMMM D')} >
+        <MainLayout
+            addAction={() => {
+                setMidalVisible(!modalVisible);
+            }}
+            title={moment().format('MMMM D')}
+        >
             <FlatList
-                data={taskData}
+                data={todayItems}
+                style={styles.modalScrollview}
                 renderItem={({ item }: { item: TodayTask }) =>
                     <SwipeItem >
                         <TodayItem
-                            id={item.id}
-                            name={item.name}
-                            startTime={item.startTime}
-                            endTime={item.endTime}
-                            isComplete={item.isComplete} />
+                            toggleComplete={() => handleComplete(item.id)}
+                            {...item} />
                     </SwipeItem>}
                 keyExtractor={(item: TodayTask) => item.id} />
         </MainLayout >

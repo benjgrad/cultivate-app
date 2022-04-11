@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import uuid from "react-native-uuid";
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
-import { checkBoxHeight, deleteItemHeight, useStyles } from '../../Styles';
+import { deleteItemHeight, useStyles } from '../../Styles';
 import { Milestone as Milestone } from '../../types'
 import { Ionicons } from '@expo/vector-icons';
-import { Divider } from '@material-ui/core';
 
 type MilestoneEditorProps = {
     milestones: Milestone[];
@@ -45,10 +44,9 @@ export const MilestoneEditor: React.FC<MilestoneEditorProps> = (props) => {
         props.onChange(milstones);
     }
 
-    let milestones = props.milestones.map(m => {
+    const milestones = props.milestones.map(m => {
         return <><MilestoneEntry key={m.id} {...{ ...m, onChange: updateMilestones }} /></>
-    })
-    //TODO Add buttons
+    });
     return (<>
         <View style={styles.milestoneEditContainer}>
             {milestones}
@@ -70,7 +68,7 @@ const MilestoneEntry: React.FC<MilestoneEntryProps> = (props) => {
     return (<View style={styles.milestoneItemContainer}>
         <View style={styles.textContainer}>
             <TextInput
-                style={styles.milstoneItem} //TODO Fix these styles
+                style={styles.milstoneItem}
                 key={props.id}
                 value={props.name}
                 placeholder="Milestone"

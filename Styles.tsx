@@ -167,6 +167,17 @@ export function useStyles(): any {
             right: 15,
             top: (itemHeight - checkBoxHeight) / 2,
         },
+        todayCheckBox: {
+            padding: 0,
+            width: checkBoxHeight,
+            height: checkBoxHeight,
+            borderRadius: 20,
+            borderColor: 'black',
+            borderWidth: 3,
+            position: 'absolute',
+            right: 15,
+            top: (itemHeight - checkBoxHeight) / 2,
+        },
         textInputLabel: {
             fontSize: 20,
             top: 20,
