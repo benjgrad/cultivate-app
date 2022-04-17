@@ -65,11 +65,10 @@ const MilestoneEntry: React.FC<MilestoneEntryProps> = (props) => {
     const styles = useStyles();
 
 
-    return (<View style={styles.milestoneItemContainer}>
+    return (<View style={styles.milestoneItemContainer} key={props.id}>
         <View style={styles.textContainer}>
             <TextInput
                 style={styles.milstoneItem}
-                key={props.id}
                 value={props.name}
                 placeholder="Milestone"
                 onChangeText={(val: string) => props.onChange({ ...props, name: val })}

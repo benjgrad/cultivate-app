@@ -10,6 +10,7 @@ import uuid from 'react-native-uuid';
 import SwipeItem from '../components/common/SwipeItem';
 import { TodayItem } from '../components/today/TodayItem';
 import { useStyles } from '../Styles';
+import { TodayListModal } from '../components/today/TodayListModal';
 
 
 const taskData = [
@@ -65,7 +66,7 @@ const taskData = [
 ] as TodayTask[];
 
 const TodayScreen: React.FC = () => {
-    const [modalVisible, setMidalVisible] = React.useState<boolean>(false);
+    const [modalVisible, setModalVisible] = React.useState<boolean>(false);
     const [todayItems, setTodayItems] = React.useState<TodayTask[]>(taskData);
 
     const styles = useStyles();
@@ -87,7 +88,7 @@ const TodayScreen: React.FC = () => {
     return (
         <MainLayout
             addAction={() => {
-                setMidalVisible(!modalVisible);
+                setModalVisible(!modalVisible);
             }}
             title={moment().format('MMMM D')}
         >
@@ -101,6 +102,10 @@ const TodayScreen: React.FC = () => {
                             {...item} />
                     </SwipeItem>}
                 keyExtractor={(item: TodayTask) => item.id} />
+            <TodayListModal
+                modalVisible={modalVisible}
+                toggleModalVisible={() => setModalVisible(!modalVisible)}
+            />
         </MainLayout >
     );
 }

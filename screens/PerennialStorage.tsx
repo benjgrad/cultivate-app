@@ -1,5 +1,7 @@
 import { Alert, AsyncStorage } from "react-native";
-import { Perennial } from "../types";
+import { Perennial, PerennialTaskStats } from "../types";
+
+import uuid from "react-native-uuid";
 
 export const storeData = async (data: Perennial[]) => {
     try {
@@ -77,7 +79,7 @@ export const getStoredItem = async (id: string, setPerennialData: ((item: Perenn
     }
 }
 
-export const getStoredData = async (setPerennialData: (item: Perennial[]) => void, existingData?: Perennial[]) => {
+export const getStoredData = async (setPerennialData: (items: Perennial[]) => void, existingData?: Perennial[]) => {
     try {
         const jsonData = await AsyncStorage.getItem('perennialData');
         if (jsonData !== null) {
@@ -85,8 +87,9 @@ export const getStoredData = async (setPerennialData: (item: Perennial[]) => voi
             if (!existingData) {
                 existingData = [];
             }
-            setPerennialData([...JSON.parse(jsonData), ...existingData]);
-            console.log("got data");
+            const newData = [...JSON.parse(jsonData), ...existingData]
+            setPerennialData(newData);
+            console.log("got data: ", newData.length);
         }
     } catch (error) {
         Alert.alert(
@@ -97,4 +100,27 @@ export const getStoredData = async (setPerennialData: (item: Perennial[]) => voi
             ]
         )
     }
+}
+
+export const getAllItems = async (setPerennialData: (items: PerennialTaskStats[]) => void) => {
+    let tree: Perennial[] = [];
+    let taskList: PerennialTaskStats[] = [];
+    await getStoredData((items) => tree = items);
+    const stack = Object.assign([] as Perennial[], tree);
+
+    while (stack.length > 0) {
+        const item = stack.pop();
+        if (item) {
+            stack.concat(item.subtasks);
+            //TODO get actual recurrence data
+            taskList.push({
+                taskId: uuid.v4().toString(),
+                isComplete: false,
+                numComplete: 0,
+                ...item
+            });
+        }
+    }
+
+    setPerennialData(taskList);
 }

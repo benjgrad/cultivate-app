@@ -51,10 +51,6 @@ const AddPerennialModal: React.FC<ModalProps> = (props) => {
     }
   }, [perennialContext.currentItem.id])
 
-  const handleMilestoneChange = (milestones: Milestone[]) => {
-    setCurrentItem({ ...currentItem, milestones });
-  }
-
   return (
     <FullscreenModal
       modalVisible={modalVisible}
@@ -64,6 +60,7 @@ const AddPerennialModal: React.FC<ModalProps> = (props) => {
         perennialContext.saveCurrentItem(currentItem, 'save');
         setModalVisible(!modalVisible);
       }}
+      scroll
     >
       <TextInput
         style={[styles.inputRow, styles.nameTextField]}

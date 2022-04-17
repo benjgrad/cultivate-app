@@ -7,12 +7,20 @@ import { useStyles } from '../../Styles';
 type FullscreenModalProps = {
     modalVisible: boolean;
     backMsg: string;
-    backBtn: () => void;
+    backBtn?: () => void;
     doneBtn: () => void;
+    scroll?: boolean
 };
 export const FullscreenModal: React.FC<FullscreenModalProps> = (props) => {
     const styles = useStyles();
-    const { modalVisible, backMsg, backBtn, doneBtn } = props;
+    const { modalVisible, backMsg, doneBtn } = props;
+    let backBtn = props.backBtn ?? function () { };
+
+    let content = props.children;
+    if (props.scroll) {
+        content = <ScrollView style={styles.modalScrollview}>{props.children}</ScrollView>
+    }
+
     return <Modal
         animationType="slide"
         transparent={true}
@@ -21,7 +29,7 @@ export const FullscreenModal: React.FC<FullscreenModalProps> = (props) => {
             <View style={styles.topNav}>
                 <TouchableOpacity onPress={backBtn}
                     style={styles.modalBack}>
-                    <Text style={styles.modalDoneText}>{"<" + backMsg}</Text>
+                    <Text style={styles.modalDoneText}>{props.backBtn && "<" + backMsg}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.modalDone}
@@ -29,9 +37,7 @@ export const FullscreenModal: React.FC<FullscreenModalProps> = (props) => {
                     <Text style={styles.modalDoneText}>Done</Text>
                 </TouchableOpacity>
             </View>
-            <ScrollView style={styles.modalScrollview}>
-                {props.children}
-            </ScrollView>
+            {content}
         </View>
     </Modal>;
 };
