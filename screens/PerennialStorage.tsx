@@ -102,7 +102,7 @@ export const getStoredData = async (setPerennialData: (items: Perennial[]) => vo
     }
 }
 
-export const getAllItems = async (setPerennialData: (items: PerennialTaskStats[]) => void) => {
+export const getAllItems = async (setPerennialData: (items: PerennialTaskStats[]) => void, onlySubtasks?: boolean) => {
     let tree: Perennial[] = [];
     let taskList: PerennialTaskStats[] = [];
     await getStoredData((items) => tree = items);
@@ -113,12 +113,14 @@ export const getAllItems = async (setPerennialData: (items: PerennialTaskStats[]
         if (item) {
             stack = Object.assign(stack, item.subtasks);
             //TODO get actual historical data
-            taskList.push({
-                taskId: uuid.v4().toString(),
-                isComplete: false,
-                numComplete: 0,
-                ...item
-            });
+            if (!onlySubtasks || item.subtasks.length == 0) {
+                taskList.push({
+                    taskId: uuid.v4().toString(),
+                    isComplete: false,
+                    numComplete: 0,
+                    ...item
+                });
+            }
         }
     }
 

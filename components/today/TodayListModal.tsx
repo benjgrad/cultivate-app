@@ -16,7 +16,7 @@ export const TodayListModal: React.FC<TodayListModalProps> = (props) => {
 
     const styles = useStyles();
 
-    useEffect(() => { getAllItems(setPerennialTasks) }, [props.modalVisible]);
+    useEffect(() => { getAllItems(setPerennialTasks, true) }, [props.modalVisible]);
 
     return (
         <FullscreenModal
