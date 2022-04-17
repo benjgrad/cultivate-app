@@ -106,13 +106,13 @@ export const getAllItems = async (setPerennialData: (items: PerennialTaskStats[]
     let tree: Perennial[] = [];
     let taskList: PerennialTaskStats[] = [];
     await getStoredData((items) => tree = items);
-    const stack = Object.assign([] as Perennial[], tree);
+    let stack = Object.assign([] as Perennial[], tree);
 
     while (stack.length > 0) {
         const item = stack.pop();
         if (item) {
-            stack.concat(item.subtasks);
-            //TODO get actual recurrence data
+            stack = Object.assign(stack, item.subtasks);
+            //TODO get actual historical data
             taskList.push({
                 taskId: uuid.v4().toString(),
                 isComplete: false,
