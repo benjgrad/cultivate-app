@@ -45,7 +45,7 @@ export const MilestoneEditor: React.FC<MilestoneEditorProps> = (props) => {
     }
 
     const milestones = props.milestones.map(m => {
-        return <><MilestoneEntry key={m.id} {...{ ...m, onChange: updateMilestones }} /></>
+        return <MilestoneEntry key={m.id} {...{ ...m, onChange: updateMilestones }} />
     });
     return (<>
         <View style={styles.milestoneEditContainer}>
