@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { SafeAreaView, ViewPropsIOS } from 'react-native';
 import MainLayout from '../components/MainLayout';
 
 import { TodayTask } from '../types'
@@ -68,10 +67,13 @@ const taskData = [
 const TodayScreen: React.FC = () => {
     const [modalVisible, setModalVisible] = React.useState<boolean>(false);
     const [todayItems, setTodayItems] = React.useState<TodayTask[]>(taskData);
+    React.useEffect(() => { }, []);
 
     const styles = useStyles();
 
     const handleComplete = (id: string) => {
+        // TODO set Lastcomplete stats
+        // Save to local storage
         let i = 0;
         const found = todayItems?.find((elem: TodayTask, iter: number) => {
             i = iter;
@@ -83,6 +85,25 @@ const TodayScreen: React.FC = () => {
             newItems.splice(i, 1, todayItem);
             setTodayItems(newItems);
         }
+    }
+
+    const saveTask = (item: TodayTask, action?: 'save' | 'delete') => {
+        let i = 0;
+        const found = todayItems.find((elem: TodayTask, iter: number) => {
+            i = iter;
+            return item.id == elem.id;
+        });
+        let newData = todayItems;
+        if (!!found) {
+            if (action == 'delete') {
+                newData.splice(i, 1);
+            } else {
+                newData.splice(i, 1, item)
+            }
+        } else {
+            newData = [...todayItems, item];
+        }
+        setTodayItems(newData);
     }
 
     return (
@@ -105,6 +126,7 @@ const TodayScreen: React.FC = () => {
             <TodayListModal
                 modalVisible={modalVisible}
                 toggleModalVisible={() => setModalVisible(!modalVisible)}
+                addTask={saveTask}
             />
         </MainLayout >
     );

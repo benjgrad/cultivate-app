@@ -1,5 +1,5 @@
 import { Alert, AsyncStorage } from "react-native";
-import { Perennial, PerennialTaskStats } from "../types";
+import { Perennial, PerennialTaskStats } from "../../types";
 
 import uuid from "react-native-uuid";
 

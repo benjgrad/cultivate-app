@@ -6,7 +6,7 @@ import { Frequency, Perennial, PerennialSaveFn } from "../types";
 import { PerennialItem } from "../components/perennials/PerennialItems";
 import AddPerennialModal from "../components/perennials/AddPerennialModal";
 import { PerennialContext } from "../components/PerennialContext";
-import { storeData, getStoredData, storeItem, removeItem } from "./PerennialStorage";
+import { storeData, getStoredData, storeItem, removeItem } from "../components/perennials/PerennialStorage";
 import { useStyles } from "../Styles";
 
 

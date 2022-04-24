@@ -112,6 +112,23 @@ export function useStyles(): any {
             shadowRadius: 10,
             elevation: 5
         },
+        timeModal: {
+            marginTop: '10%',
+            height: '40%',
+            backgroundColor: "white",
+            borderRadius: 20,
+            paddingHorizontal: 35,
+            paddingTop: 15,
+            paddingBottom: 80,
+            shadowColor: "#000",
+            shadowOffset: {
+                width: 0,
+                height: 2
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 10,
+            elevation: 5
+        },
         topNav: {
             flexDirection: "row",
         },

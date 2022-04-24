@@ -6,7 +6,7 @@ import { BaseTask, Frequency, Milestone, Perennial, PerennialSaveFn } from "../.
 import { Ionicons } from "@expo/vector-icons";
 import { MileStoneItem } from "./MilestoneProps";
 import { PerennialContext } from "../PerennialContext";
-import { removeItem, storeItem } from "../../screens/PerennialStorage";
+import { removeItem, storeItem } from "./PerennialStorage";
 import { checkBoxHeight, useStyles } from "../../Styles";
 
 interface PerennialItemProps extends Perennial {

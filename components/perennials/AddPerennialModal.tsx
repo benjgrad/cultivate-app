@@ -4,7 +4,7 @@ import { Milestone, Perennial, Frequency } from "../../types";
 import { FrequencyPicker } from "./FrequencyPicker";
 import { FullscreenModal } from "../common/FullscreenModal";
 import { PerennialContext } from "../PerennialContext";
-import { getStoredItem } from "../../screens/PerennialStorage";
+import { getStoredItem } from "./PerennialStorage";
 import { useStyles } from "../../Styles";
 import { MilestoneEditor } from "./MilestoneEditor";
 
