@@ -10,53 +10,32 @@ type ScrollWheelProps = {
 export const ScrollWheel: React.FC<ScrollWheelProps> = (props) => {
     let placeholderData: number[] = [];
 
-    const initialScrollIndex = 50;
+    const initialScrollIndex = 100;
     const initialXVal = initialScrollIndex * 200;
     const [oldValue, setOldValue] = React.useState(0);
     const [oldTimestamp, setOldTimestamp] = React.useState(0);
-    const [velocity, setVelocity] = React.useState(0);
-    const [jumped, setJumped] = React.useState(false);
-    const decelerationRate = 1;
-    const scrollThreshold = 10;
+    const decelerationRate = 0;
 
     for (let i = 0; i < 100; i++) {
         placeholderData[i] = i;
     }
     let flatListRef: VirtualizedList<number> | null;
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        if (jumped) {
-            console.log("Jump to middle", velocity);
-            //const velocityIndex = initialScrollIndex + (newIndex % 1) + velocity * 3 * decelerationRate;
-
-            //Continue current velocity
-            flatListRef?.scrollToOffset({
-                animated: true,
-                offset: initialXVal + 10 * velocity * decelerationRate
-            });
-            setJumped(false);
-        }
-
-        const distance = (event.nativeEvent.contentOffset.x - initialXVal) - oldValue;
+        const distance = oldValue - (event.nativeEvent.contentOffset.x - initialXVal);
         const elapsed = event.timeStamp - oldTimestamp;
+        const velocity = distance / elapsed;
 
         const newIndex = event.nativeEvent.contentOffset.x / 200;
 
         setOldValue(event.nativeEvent.contentOffset.x - initialXVal);
         setOldTimestamp(event.timeStamp);
         props.onScroll(event.nativeEvent.contentOffset.x - initialXVal);
-        if (flatListRef && (//Math.abs(velocity) < 0.03 ||
-            (newIndex < scrollThreshold ||
-                initialScrollIndex * 2 - newIndex < scrollThreshold))) {
-            //Snap to the center, with current offset
-            flatListRef.scrollToOffset({
+        if (Math.abs(velocity) < 0.04 && flatListRef) {
+            flatListRef.scrollToIndex({
                 animated: false,
-                offset: initialXVal + (event.nativeEvent.contentOffset.x % 200)
+                index: initialScrollIndex + newIndex % 1
             });
-            setJumped(true);
-            setVelocity(distance / elapsed);
         }
-        console.log(velocity);
-
     }
 
 
