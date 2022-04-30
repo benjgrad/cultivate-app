@@ -129,6 +129,17 @@ export function useStyles(): any {
             shadowRadius: 10,
             elevation: 5
         },
+        scrollWheel: {
+            height: 40,
+        },
+        scrollWheelItem: {
+            height: 40,
+            backgroundColor: 'grey',
+            borderColor: 'black',
+            borderRadius: 2,
+            width: 20,
+            borderWidth: 1
+        },
         topNav: {
             flexDirection: "row",
         },

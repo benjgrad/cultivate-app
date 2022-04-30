@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Modal, Text, TouchableOpacity, View } from "react-native"
 import { useStyles } from '../../Styles'
 import moment from 'moment';
+import { ScrollWheel } from '../common/ScrollWheel';
 
 type TimePickerModalProps = {
     modalVisible: boolean,
@@ -19,9 +20,11 @@ export const TimePickerModal: React.FC<TimePickerModalProps> = (props) => {
     const [startTime, setStartTime] = React.useState<moment.Moment | null>(null);
     const [endTime, setEndTime] = React.useState<moment.Moment | null>(null);
 
-    const handleChange = (value: moment.Moment | null, setter: React.Dispatch<React.SetStateAction<moment.Moment | null>>) => {
-        setter(value);
+    const handleChange = (value: number, setter: React.Dispatch<React.SetStateAction<moment.Moment | null>>) => {
+        setter(moment(value));
     }
+
+
 
     return <Modal
         animationType="slide"
@@ -39,6 +42,7 @@ export const TimePickerModal: React.FC<TimePickerModalProps> = (props) => {
                     <Text style={styles.modalDoneText}>Done</Text>
                 </TouchableOpacity>
             </View>
+            <ScrollWheel onScroll={(value: number) => { handleChange(value, setStartTime); }} />
         </View>
     </Modal>
 }
