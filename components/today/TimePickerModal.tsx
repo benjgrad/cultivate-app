@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Modal, Text, TouchableOpacity, View } from "react-native"
 import { useStyles } from '../../Styles'
 import moment from 'moment';
+import DatePicker from 'react-native-date-picker'
 import { ScrollWheel } from '../common/ScrollWheel';
 
 type TimePickerModalProps = {
@@ -17,7 +18,7 @@ export const TimePickerModal: React.FC<TimePickerModalProps> = (props) => {
     // OnClick, Highlight field and scrollwheel
     // Scrollwheel is infinite horizontal flatlist with 
     // output as scroll distance
-    const [startTime, setStartTime] = React.useState<moment.Moment | null>(null);
+    const [startTime, setStartTime] = React.useState<Date>(new Date());
     const [endTime, setEndTime] = React.useState<moment.Moment | null>(null);
 
     const handleChange = (value: number, setter: React.Dispatch<React.SetStateAction<moment.Moment | null>>) => {
@@ -42,7 +43,7 @@ export const TimePickerModal: React.FC<TimePickerModalProps> = (props) => {
                     <Text style={styles.modalDoneText}>Done</Text>
                 </TouchableOpacity>
             </View>
-            <ScrollWheel onScroll={(value: number) => { handleChange(value, setStartTime); }} />
+            <DatePicker mode={"time"} date={startTime} onDateChange={setStartTime} />
         </View>
     </Modal>
 }
