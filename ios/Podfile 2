@@ -2,14 +2,12 @@ require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/react-native-unimodules/cocoapods.rb'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-platform :ios, '12.0'
+platform :ios, '15.2'
 
 target 'Cultivate' do
   use_unimodules!
   config = use_native_modules!
 
-  pod 'expo-dev-launcher', path: '../node_modules/expo-dev-launcher', :configurations => :debug
-  pod 'expo-dev-menu', path: '../node_modules/expo-dev-menu', :configurations => :debug
   use_react_native!(:path => config["reactNativePath"])
 
   # Uncomment to opt-in to using Flipper
