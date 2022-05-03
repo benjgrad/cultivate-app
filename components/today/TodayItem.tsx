@@ -20,7 +20,7 @@ export const TodayItem: React.FC<TodayItemProps> = (props) => {
                         <Text style={styles.time}>{props.startTime?.format('h:mma') + ' - ' + props.endTime?.format('h:mma')}</Text>}
                 </View>
                 <View style={styles.todayCheckBox}>
-                    {props.isComplete && < Ionicons size={checkBoxHeight - 6} name="checkmark-outline" />}
+                    {props.isComplete && <Ionicons size={checkBoxHeight - 6} name="checkmark-outline" />}
                 </View>
             </View>
         </TouchableOpacity>

@@ -1,7 +1,9 @@
 {
   "expo": {
     "name": "Cultivate",
-    "slug": "Clutivate",
+    "slug": "cultivate",
+    "privacy": "public",
+    "description": "Cultivate the interests and relationships that are important to you",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

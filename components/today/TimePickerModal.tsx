@@ -1,30 +1,30 @@
 import * as React from 'react'
-import { Modal, Text, TouchableOpacity, View } from "react-native"
+import { Button, Modal, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { useStyles } from '../../Styles'
 import moment from 'moment';
-import DatePicker from 'react-native-date-picker'
-import { ScrollWheel } from '../common/ScrollWheel';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { TodayTask } from '../../types';
 
-type TimePickerModalProps = {
+interface TimePickerModalProps extends TodayTask {
     modalVisible: boolean,
-    onClose: () => void
+    onClose: (item: TodayTask) => void
 }
+
 
 export const TimePickerModal: React.FC<TimePickerModalProps> = (props) => {
     const styles = useStyles();
 
-    // TODO Create 2 TimePickers
-    // 2 text components
-    // OnClick, Highlight field and scrollwheel
-    // Scrollwheel is infinite horizontal flatlist with 
-    // output as scroll distance
-    const [startTime, setStartTime] = React.useState<Date>(new Date());
-    const [endTime, setEndTime] = React.useState<moment.Moment | null>(null);
+    const [startTime, setStartTime] = React.useState<moment.Moment>(moment());
+    const [endTime, setEndTime] = React.useState<moment.Moment>(moment());
+    const [name, setName] = React.useState('');
 
-    const handleChange = (value: number, setter: React.Dispatch<React.SetStateAction<moment.Moment | null>>) => {
-        setter(moment(value));
-    }
+    const mode: any = 'time'
 
+    const onChange = (setter: React.Dispatch<React.SetStateAction<moment.Moment>>) => (_: any, selectedDate: Date | undefined) => {
+        if (selectedDate) {
+            setter(moment(selectedDate));
+        }
+    };
 
 
     return <Modal
@@ -39,11 +39,51 @@ export const TimePickerModal: React.FC<TimePickerModalProps> = (props) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.modalDone}
-                    onPress={() => props.onClose()}>
+                    onPress={() => {
+
+                        props.onClose({
+                            ...props,
+                            name: name ? name : props.name,
+                            startTime,
+                            endTime
+                        });
+                    }}>
                     <Text style={styles.modalDoneText}>Done</Text>
                 </TouchableOpacity>
             </View>
-            <DatePicker mode={"time"} date={startTime} onDateChange={setStartTime} />
+            <TextInput
+                style={[styles.inputRow, styles.nameTextField]}
+                onChangeText={(name: string) => {
+                    setName(name);
+                }}
+                placeholder={props.name}
+            />
+            <View style={styles.inline}>
+                <View style={styles.timePickerContainer}>
+                    <DateTimePicker
+                        style={styles.timePicker}
+                        minuteInterval={10}
+                        display="compact"
+                        testID="dateTimePicker"
+                        value={startTime.toDate()}
+                        mode={mode}
+                        onChange={onChange(setStartTime)}
+                    />
+                </View>
+                <Text style={styles.dash}>-</Text>
+                <View style={styles.timePickerContainer}>
+                    <DateTimePicker
+                        style={styles.timePicker}
+                        minimumDate={startTime.toDate()}
+                        minuteInterval={10}
+                        display="compact"
+                        testID="dateTimePicker"
+                        value={endTime.toDate()}
+                        mode={mode}
+                        onChange={onChange(setEndTime)}
+                    />
+                </View>
+            </View>
         </View>
     </Modal>
 }

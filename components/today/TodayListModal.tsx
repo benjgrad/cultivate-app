@@ -18,9 +18,9 @@ export const TodayListModal: React.FC<TodayListModalProps> = (props) => {
     const [timeModalVisible, setTimeModalVisible] = React.useState(false);
     const [currentTask, setCurrentTask] = React.useState<TodayTask>({ id: '', name: '', isComplete: false });
     const styles = useStyles();
-    const onClose = () => {
+    const onClose = (item: TodayTask) => {
         setTimeModalVisible(!timeModalVisible);
-        props.addTask(currentTask);
+        props.addTask(item);
     }
     useEffect(() => { PerennialStorage.getAllItems(setPerennialTasks, true) }, [props.modalVisible]);
 
@@ -41,7 +41,7 @@ export const TodayListModal: React.FC<TodayListModalProps> = (props) => {
                     }} />);
                 }}
             />
-            <TimePickerModal modalVisible={timeModalVisible} onClose={onClose} />
+            <TimePickerModal {...currentTask} modalVisible={timeModalVisible} onClose={onClose} />
         </FullscreenModal>);
 }
 

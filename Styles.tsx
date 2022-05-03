@@ -24,6 +24,25 @@ export function useStyles(): any {
         centerItems: {
             alignItems: 'center',
         },
+        timePicker: {
+            flex: 1,
+        },
+        timePickerContainer: {
+            alignContent: 'center',
+            height: 40,
+            width: 90,
+            margin: 10,
+        },
+        dash: {
+            width: 10
+        },
+        inline: {
+            marginHorizontal: 24,
+            flexDirection: "row",
+            justifyContent: 'center', //Centered vertically
+            alignItems: 'center', // Centered horizontally
+            backgroundColor: Colors[colorScheme].background,
+        },
         container: {
             marginHorizontal: 24,
             flexDirection: "row",
@@ -213,7 +232,7 @@ export function useStyles(): any {
         },
         deleteBtn: {
             alignItems: 'center',
-            marginTop: '90%',
+            marginTop: '20%',
         },
         deleteBtnText: {
             color: "red",
