@@ -10,7 +10,7 @@ import * as React from 'react';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
-import Annuals from '../screens/AnnualScreen';
+import { AnnualScreen } from '../screens/AnnualScreen';
 import Perennials from '../screens/PerennialScreen';
 import TodayScreen from '../screens/TodayScreen';
 import { BottomTabParamList, TabOneParamList, TabTwoParamList } from '../types';
@@ -29,7 +29,7 @@ export default function BottomTabNavigator() {
       }}>
       <BottomTab.Screen
         name="Annuals"
-        component={Annuals}
+        component={AnnualScreen}
         options={{
           tabBarIcon: ({ color }) => <TabBarIcon name="leaf-outline" color={color} />,
         }}

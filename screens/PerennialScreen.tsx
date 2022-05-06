@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Alert, AsyncStorage, FlatList, Pressable } from "react-native";
+import { FlatList } from "react-native";
 import MainLayout from "../components/MainLayout";
 import uuid from "react-native-uuid";
 import { Frequency, Perennial, PerennialSaveFn } from "../types";
@@ -20,6 +20,7 @@ export default function PerennialScreen() {
   const [saveCurrentItem, setSaveCurrentItem] = React.useState<PerennialSaveFn>((item: Perennial) => { });
   const [openParentAction, setOpenParentAction] = React.useState<() => void>(() => { });
   const [perennialData, setPerennialData] = React.useState<Perennial[]>([]);
+  const [updateId, setUpdateId] = React.useState<string>(uuid.v4().toString());
 
   const setCurrentPerennial = (
     newItem: Perennial,
@@ -34,11 +35,12 @@ export default function PerennialScreen() {
 
   const saveChild = (item: Perennial, action: 'save' | 'delete') => {
     let i = 0;
+    setUpdateId(uuid.v4().toString());
     const found = perennialData.find((elem: Perennial, iter: number) => {
       i = iter;
       return item.id == elem.id;
     });
-    let newData = perennialData;
+    let newData = Object.assign([] as Perennial[], perennialData);
     if (!!found) {
       if (action == 'delete') {
         removeItem(item);
@@ -81,12 +83,13 @@ export default function PerennialScreen() {
         <FlatList
           data={perennialData}
           style={styles.modalScrollview}
-          renderItem={({ item }: { item: Perennial }) => (
+          renderItem={({ item }: { item: Perennial }) =>
             <PerennialItem
               setParentAsCurrent={() => setModalVisible(false)}
               propogateChange={saveChild}
-              {...item} />
-          )}
+              {...item}
+              updateId={updateId} />
+          }
           keyExtractor={(item: Perennial) => item.id}
         />
         <AddPerennialModal modalVisible={modalVisible} setModalVisible={setModalVisible} />

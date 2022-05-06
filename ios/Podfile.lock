@@ -323,6 +323,8 @@ PODS:
     - React-Core (= 0.63.4)
     - React-cxxreact (= 0.63.4)
     - React-jsi (= 0.63.4)
+  - RNCalendarEvents (2.2.0):
+    - React
   - RNCMaskedView (0.1.10):
     - React
   - RNDateTimePicker (6.1.3):
@@ -434,6 +436,7 @@ DEPENDENCIES:
   - React-RCTText (from `../node_modules/react-native/Libraries/Text`)
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - RNCalendarEvents (from `../node_modules/react-native-calendar-events`)
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
@@ -553,6 +556,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/Vibration"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RNCalendarEvents:
+    :path: "../node_modules/react-native-calendar-events"
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
   RNDateTimePicker:
@@ -641,6 +646,7 @@ SPEC CHECKSUMS:
   React-RCTText: 5c51df3f08cb9dedc6e790161195d12bac06101c
   React-RCTVibration: ae4f914cfe8de7d4de95ae1ea6cc8f6315d73d9d
   ReactCommon: 73d79c7039f473b76db6ff7c6b159c478acbbb3b
+  RNCalendarEvents: 7e65eb4a94f53c1744d1e275f7fafcfaa619f7a3
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
   RNDateTimePicker: 04b805a3cb4d386e5e6aff54b47ace7bad706fda
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
@@ -661,6 +667,6 @@ SPEC CHECKSUMS:
   UMTaskManagerInterface: 203c11259d2699b5b3a4eda4adbc466f5cb5c561
   Yoga: 4bd86afe9883422a7c4028c00e34790f560923d6
 
-PODFILE CHECKSUM: 98b402c93f6b20de7cca0981bff0da98588a33fb
+PODFILE CHECKSUM: 1b51224af13288a628561b93ea0ed8f50477738f
 
 COCOAPODS: 1.11.3

@@ -8,13 +8,17 @@ import { MileStoneItem } from "./MilestoneProps";
 import { PerennialContext } from "../PerennialContext";
 import { removeItem, storeItem } from "./PerennialStorage";
 import { checkBoxHeight, useStyles } from "../../Styles";
+import { updateId } from "expo-updates";
 
 interface PerennialItemProps extends Perennial {
     propogateChange: PerennialSaveFn;
     setParentAsCurrent: () => void;
+    updateId: string;
 }
 
-export const PerennialItem: React.FC<PerennialItemProps> = (props) => {
+
+export const PerennialItem: React.FC<PerennialItemProps> = React.memo((props) => {
+    console.log(props.updateId);
     const styles = useStyles();
     const perennialContext = React.useContext(PerennialContext);
 
@@ -81,6 +85,16 @@ export const PerennialItem: React.FC<PerennialItemProps> = (props) => {
         }
     };
 
+    const subtasks = props.subtasks &&
+        props.subtasks.map((subtask) => (
+            <PerennialItem
+                setParentAsCurrent={setThisToCurrent}
+                propogateChange={saveThisPerennial}
+                key={subtask.id}
+                {...{ ...subtask, parent: thisItem.id }}
+                updateId={props.updateId}
+            />
+        ));
     const setThisToCurrent = () => {
         perennialContext.setCurrentItem(thisItem, saveThisPerennial, props.setParentAsCurrent);
     };
@@ -114,18 +128,12 @@ export const PerennialItem: React.FC<PerennialItemProps> = (props) => {
                 </TouchableOpacity>
             </View>
             <View style={styles.subtasks}>
-                {props.subtasks &&
-                    props.subtasks.map((subtask) => (
-                        <PerennialItem
-                            setParentAsCurrent={setThisToCurrent}
-                            propogateChange={saveThisPerennial}
-                            key={subtask.id}
-                            {...{ ...subtask, parent: thisItem.id }}
-                        />
-                    ))}
+                {subtasks}
                 {props.milestones &&
                     props.milestones.map((item) => <MileStoneItem key={item.id} toggleComplete={toggleMilestoneComplete} {...item} />)}
             </View>
         </>
     );
-};
+}, (prevProps, nextProps) => {
+    return prevProps.updateId == nextProps.updateId;
+});

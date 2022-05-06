@@ -18,6 +18,17 @@ export type BottomTabParamList = {
   Perennials: undefined;
 };
 
+export interface Annual extends AnnualSubtask {
+  startTime: moment.Moment,
+  endTime: moment.Moment,
+  subtasks: AnnualSubtask[]
+}
+
+export interface AnnualSubtask extends BaseTask {
+  prepTime: number,
+  subtasks: AnnualSubtask[]
+}
+
 export interface BaseTask {
   id: string;
   name: string;

@@ -57,6 +57,7 @@ const AddPerennialModal: React.FC<ModalProps> = (props) => {
       backMsg={parentName}
       backBtn={perennialContext.setParentAsCurrent}
       doneBtn={() => {
+        console.log('Save')
         perennialContext.saveCurrentItem(currentItem, 'save');
         setModalVisible(!modalVisible);
       }}

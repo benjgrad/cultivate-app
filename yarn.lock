@@ -7473,6 +7473,11 @@ react-is@^16.12.0, react-is@^16.13.0, react-is@^16.13.1, react-is@^16.7.0, react
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
+react-native-calendar-events@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-calendar-events/-/react-native-calendar-events-2.2.0.tgz#6cb78bf712457ca9928dae95b428c91e7b895ae0"
+  integrity sha512-tNUbhT6Ief0JM4OQzQAaz1ri0+MCcAoHptBcEXCz2g7q3A05pg62PR2Dio4F9t2fCAD7Y2+QggdY1ycAsF3Tsg==
+
 react-native-date-picker@^4.2.1:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/react-native-date-picker/-/react-native-date-picker-4.2.1.tgz#36d97c56c651e5b5c848c511585b0c548f90e3b9"
