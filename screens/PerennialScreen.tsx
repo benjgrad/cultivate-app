@@ -86,9 +86,10 @@ export default function PerennialScreen() {
           renderItem={({ item }: { item: Perennial }) =>
             <PerennialItem
               setParentAsCurrent={() => setModalVisible(false)}
-              propogateChange={saveChild}
               {...item}
-              updateId={updateId} />
+              propogateChange={saveChild}
+              updateId={updateId}
+            />
           }
           keyExtractor={(item: Perennial) => item.id}
         />

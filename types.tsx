@@ -3,7 +3,9 @@
  * https://reactnavigation.org/docs/typescript/
  */
 
+import { useLinkBuilder } from "@react-navigation/native";
 import moment from "moment";
+import uuid from "react-native-uuid";
 
 export type RootStackParamList = {
   Root: undefined;
@@ -11,6 +13,7 @@ export type RootStackParamList = {
 };
 
 export type PerennialSaveFn = (item: Perennial, action: 'save' | 'delete') => void;
+export type AnnualSaveFn = (item: Annual | AnnualEvent, action: 'save' | 'delete') => void;
 
 export type BottomTabParamList = {
   Annuals: undefined;
@@ -18,15 +21,26 @@ export type BottomTabParamList = {
   Perennials: undefined;
 };
 
-export interface Annual extends AnnualSubtask {
-  startTime: moment.Moment,
-  endTime: moment.Moment,
-  subtasks: AnnualSubtask[]
+export const newAnnual = () => {
+  return {
+    id: uuid.v4(),
+    name: "",
+    subtasks: [],
+    prepTime: 0,
+    parent: ""
+  } as Annual;
 }
 
-export interface AnnualSubtask extends BaseTask {
+export interface AnnualEvent extends Annual {
+  startTime: moment.Moment,
+  endTime: moment.Moment,
+  subtasks: Annual[]
+}
+
+export interface Annual extends BaseTask {
+  parent: string,
   prepTime: number,
-  subtasks: AnnualSubtask[]
+  subtasks: Annual[]
 }
 
 export interface BaseTask {

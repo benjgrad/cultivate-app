@@ -8,7 +8,6 @@ import { MileStoneItem } from "./MilestoneProps";
 import { PerennialContext } from "../PerennialContext";
 import { removeItem, storeItem } from "./PerennialStorage";
 import { checkBoxHeight, useStyles } from "../../Styles";
-import { updateId } from "expo-updates";
 
 interface PerennialItemProps extends Perennial {
     propogateChange: PerennialSaveFn;
@@ -18,7 +17,6 @@ interface PerennialItemProps extends Perennial {
 
 
 export const PerennialItem: React.FC<PerennialItemProps> = React.memo((props) => {
-    console.log(props.updateId);
     const styles = useStyles();
     const perennialContext = React.useContext(PerennialContext);
 
@@ -89,9 +87,9 @@ export const PerennialItem: React.FC<PerennialItemProps> = React.memo((props) =>
         props.subtasks.map((subtask) => (
             <PerennialItem
                 setParentAsCurrent={setThisToCurrent}
-                propogateChange={saveThisPerennial}
                 key={subtask.id}
                 {...{ ...subtask, parent: thisItem.id }}
+                propogateChange={saveThisPerennial}
                 updateId={props.updateId}
             />
         ));
@@ -103,10 +101,7 @@ export const PerennialItem: React.FC<PerennialItemProps> = React.memo((props) =>
             <View style={styles.box}>
                 <View style={styles.textContainer}>
                     <TouchableOpacity
-                        onPress={() => {
-                            //Edit thisItem
-                            perennialContext.setCurrentItem(thisItem, saveThisPerennial, props.setParentAsCurrent);
-                        }}
+                        onPress={setThisToCurrent}
                     >
                         <Text style={styles.name}>{props.name}</Text>
                     </TouchableOpacity>
