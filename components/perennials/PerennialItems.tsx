@@ -86,11 +86,11 @@ export const PerennialItem: React.FC<PerennialItemProps> = React.memo((props) =>
     const subtasks = props.subtasks &&
         props.subtasks.map((subtask) => (
             <PerennialItem
-                setParentAsCurrent={setThisToCurrent}
                 key={subtask.id}
                 {...{ ...subtask, parent: thisItem.id }}
                 propogateChange={saveThisPerennial}
                 updateId={props.updateId}
+                setParentAsCurrent={() => setThisToCurrent()}
             />
         ));
     const setThisToCurrent = () => {
@@ -101,7 +101,10 @@ export const PerennialItem: React.FC<PerennialItemProps> = React.memo((props) =>
             <View style={styles.box}>
                 <View style={styles.textContainer}>
                     <TouchableOpacity
-                        onPress={setThisToCurrent}
+                        onPress={() => {
+                            //Edit thisItem
+                            perennialContext.setCurrentItem(thisItem, saveThisPerennial, props.setParentAsCurrent);
+                        }}
                     >
                         <Text style={styles.name}>{props.name}</Text>
                     </TouchableOpacity>
