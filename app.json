@@ -1,16 +1,13 @@
 {
   "expo": {
-    "name": "Cultivate",
+    "name": "cultivate",
     "slug": "cultivate",
-    "privacy": "public",
-    "description": "Cultivate the interests and relationships that are important to you",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/images/icon.png",
-    "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
+    "icon": "./assets/images/icon.png",
+    "userInterfaceStyle": "light",
     "splash": {
-      "image": "./src/assets/images/splash.png",
+      "image": "./assets/images/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -21,18 +18,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.gradyserver.cultivate-app"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.gradyserver.cultivate"
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      }
     },
     "web": {
-      "favicon": "./src/assets/images/favicon.png"
+      "favicon": "./assets/images/favicon.png"
     }
   }
 }
