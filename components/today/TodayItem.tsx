@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { TodayTask } from '../../types';
 import { Text, View } from '../Themed';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { checkBoxHeight, useStyles } from '../../Styles';
 

@@ -1,4 +1,5 @@
-import { Alert, AsyncStorage } from "react-native";
+import { Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TodayTask } from "../../types";
 
 import uuid from "react-native-uuid";

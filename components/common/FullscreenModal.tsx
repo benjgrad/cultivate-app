@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Modal, View, Text, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native';
 import { useStyles } from '../../Styles';
 
 

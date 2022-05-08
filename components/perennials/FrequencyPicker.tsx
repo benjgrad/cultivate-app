@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Text, View, TouchableOpacity, TextInput, Picker } from 'react-native';
+import { Text, View, TouchableOpacity, TextInput } from 'react-native';
+import { Picker } from '@react-native-picker/picker'
 import { useStyles } from '../../Styles';
 import { Frequency } from '../../types';
 import { FullscreenModal } from '../common/FullscreenModal';

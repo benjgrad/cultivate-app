@@ -4,7 +4,7 @@ import MainLayout from '../components/MainLayout';
 import * as Calendar from 'expo-calendar';
 import moment from 'moment';
 import uuid from "react-native-uuid";
-import { FlatList } from 'react-native-gesture-handler';
+import { FlatList } from 'react-native';
 import { useStyles } from '../Styles';
 import { AnnualItem } from '../components/AnnualItem';
 import { Annual, AnnualEvent, AnnualSaveFn, newAnnual } from '../types';
@@ -39,12 +39,12 @@ export const AnnualScreen = () => {
         const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
         const cals: string[] = calendars.map(cal => cal.id);
         const events = await Calendar.getEventsAsync(cals,
-          moment().subtract(100, 'd').toDate(),
-          moment().add(100, 'd').toDate());
+          moment().subtract(10, 'd').toDate(),
+          moment().add(60, 'd').toDate());
         let annuals: AnnualEvent[] = events.map(event => {
           return {
             name: event.title,
-            id: event.id,
+            id: event.instanceId ?? event.id,
             startTime: moment(event.startDate),
             endTime: moment(event.endDate),
             prepTime: 0,

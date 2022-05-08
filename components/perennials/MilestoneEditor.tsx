@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View } from "react-native";
 import uuid from "react-native-uuid";
-import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
+import { TextInput, TouchableOpacity } from 'react-native';
 import { deleteItemHeight, useStyles } from '../../Styles';
 import { Milestone as Milestone } from '../../types'
 import { Ionicons } from '@expo/vector-icons';

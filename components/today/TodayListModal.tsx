@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { FlatList } from "react-native-gesture-handler";
+import { FlatList } from "react-native";
 import { Text, TouchableOpacity, View } from "react-native";
 import * as PerennialStorage from "../perennials/PerennialStorage";
 import { TodayTask, Perennial, PerennialTaskStats } from "../../types";

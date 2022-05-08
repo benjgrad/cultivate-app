@@ -1,4 +1,5 @@
-import { Alert, AsyncStorage } from "react-native";
+import { Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Perennial, PerennialTaskStats } from "../../types";
 
 import uuid from "react-native-uuid";
@@ -111,7 +112,7 @@ export const getAllItems = async (setPerennialData: (items: PerennialTaskStats[]
     while (stack.length > 0) {
         const item = stack.pop();
         if (item) {
-            stack = Object.assign(stack, item.subtasks);
+            stack = stack.concat(item.subtasks);
             //TODO get actual historical data
             if (!onlySubtasks || item.subtasks.length == 0) {
                 taskList.push({

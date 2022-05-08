@@ -3,7 +3,7 @@ import MainLayout from '../components/MainLayout';
 
 import { TodayTask } from '../types'
 
-import { FlatList } from 'react-native-gesture-handler';
+import { FlatList } from 'react-native';
 import moment from 'moment';
 import uuid from 'react-native-uuid';
 import SwipeItem from '../components/common/SwipeItem';
