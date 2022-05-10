@@ -1,6 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RecoilRoot } from 'recoil';
 
@@ -16,14 +15,12 @@ export default function App() {
     return null;
   } else {
     return (
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <SafeAreaProvider>
-          <RecoilRoot>
-            <Navigation colorScheme={colorScheme} />
-            <StatusBar />
-          </RecoilRoot>
-        </SafeAreaProvider>
-      </GestureHandlerRootView>
+      <SafeAreaProvider>
+        <RecoilRoot>
+          <Navigation colorScheme={colorScheme} />
+          <StatusBar />
+        </RecoilRoot>
+      </SafeAreaProvider>
     );
   }
 }

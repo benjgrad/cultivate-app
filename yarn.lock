@@ -2812,6 +2812,11 @@ crypto-random-string@^2.0.0:
   resolved "https://registry.yarnpkg.com/crypto-random-string/-/crypto-random-string-2.0.0.tgz#ef2a7a966ec11083388369baa02ebead229b30d5"
   integrity sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==
 
+crypto@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/crypto/-/crypto-1.0.1.tgz#2af1b7cad8175d24c8a1b0778255794a21803037"
+  integrity sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==
+
 css-in-js-utils@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/css-in-js-utils/-/css-in-js-utils-2.0.1.tgz#3b472b398787291b47cfe3e44fecfdd9e914ba99"
@@ -5646,10 +5651,10 @@ react-native-codegen@^0.0.13:
     jscodeshift "^0.13.1"
     nullthrows "^1.1.1"
 
-react-native-gesture-handler@~2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.2.0.tgz#a551f9ca33d8766d0a24268f49e0f1b05191b105"
-  integrity sha512-WF25CNgn164bF9juW8N/jICIFXiEOgsxCuY7DRlnFdiH5ZfvMYtZHRC+zr1fFMap2ty1f2HWDQNVVSo0FDXP4A==
+react-native-gesture-handler@~2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.2.1.tgz#672258aa5a40c92a97c736bdde0a8bd6c8c6c692"
+  integrity sha512-P4kAPbSY8VFAjvFNzfePgFsbZEldfEnEfNqOJw6MlpcdXrPGwRbvMqWMVkA9lifdKTZ3XifvAgJ8+R+uEZN0zA==
   dependencies:
     "@egjs/hammerjs" "^2.0.17"
     hoist-non-react-statics "^3.3.0"

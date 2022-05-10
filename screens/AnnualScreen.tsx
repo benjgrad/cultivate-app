@@ -39,8 +39,8 @@ export const AnnualScreen = () => {
         const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
         const cals: string[] = calendars.map(cal => cal.id);
         const events = await Calendar.getEventsAsync(cals,
-          moment().subtract(10, 'd').toDate(),
-          moment().add(60, 'd').toDate());
+          moment().subtract(60, 'd').toDate(),
+          moment().add(100, 'd').toDate());
         let annuals: AnnualEvent[] = events.map(event => {
           return {
             name: event.title,

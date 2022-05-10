@@ -32,6 +32,7 @@ export default function BottomTabNavigator() {
         ]
       }}>
       <BottomTab.Screen
+
         name="Annuals"
         component={AnnualScreen}
         options={{
@@ -42,6 +43,7 @@ export default function BottomTabNavigator() {
         name="Today"
         component={TodayScreen}
         options={{
+          title: undefined,
           tabBarIcon: ({ color }) => <TabBarIcon name="home-outline" color={color} />,
         }}
       />
