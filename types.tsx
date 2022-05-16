@@ -48,7 +48,7 @@ export interface BaseTask {
   name: string;
 }
 
-export interface PerennialTaskStats extends TodayTask {
+export interface TaskStats extends TodayTask {
   taskId: string;
   lastCompleted?: moment.Moment;
   numComplete: number;

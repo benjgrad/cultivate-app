@@ -4,6 +4,7 @@ import { View, Text, TouchableOpacity } from 'react-native'
 import { checkBoxHeight, useStyles } from '../Styles'
 import { Annual, AnnualEvent, AnnualSaveFn, newAnnual } from '../types'
 import { AnnualContext } from './AnnualContext'
+import { removeItem, storeItem } from './annuals/AnnualStorage'
 
 interface AnnualItemProps extends Annual {
     onPress: () => void,
@@ -23,10 +24,10 @@ export const AnnualItem: React.FC<AnnualItemProps> = (props) => {
         //Update the current annual
         if (item.id == thisItem.id) {
             if (action == 'delete') {
-                //removeItem(item);
+                removeItem(item);
             }
             else {
-                //storeItem(item);
+                storeItem(item);
             }
             props.propogateChange(item, action);
         } else {
@@ -55,13 +56,13 @@ export const AnnualItem: React.FC<AnnualItemProps> = (props) => {
                 }
             }
             //propogate changes to parent
-            //storeItem(thisItem);
+            storeItem(thisItem);
             props.propogateChange(thisItem, 'save');
         }
     };
 
     const addSubtask = (item: Annual) => {
-        //storeItem(item);
+        storeItem(item);
         let subtasks = thisItem.subtasks || [];
         subtasks.push(item);
         saveThisAnnual({ ...thisItem, subtasks }, 'save');

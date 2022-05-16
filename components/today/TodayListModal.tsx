@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { FlatList } from "react-native";
 import { Text, TouchableOpacity, View } from "react-native";
 import * as PerennialStorage from "../perennials/PerennialStorage";
-import { TodayTask, Perennial, PerennialTaskStats } from "../../types";
+import { TodayTask, Perennial, TaskStats } from "../../types";
 import { FullscreenModal } from "../common/FullscreenModal";
 import { useStyles } from "../../Styles";
 import { TimePickerModal } from "./TimePickerModal";
@@ -14,7 +14,7 @@ type TodayListModalProps = {
 }
 
 export const TodayListModal: React.FC<TodayListModalProps> = (props) => {
-    const [perennialTasks, setPerennialTasks] = React.useState<PerennialTaskStats[]>([]);
+    const [perennialTasks, setPerennialTasks] = React.useState<TaskStats[]>([]);
     const [timeModalVisible, setTimeModalVisible] = React.useState(false);
     const [currentTask, setCurrentTask] = React.useState<TodayTask>({ id: '', name: '', isComplete: false });
     const styles = useStyles();
@@ -46,8 +46,8 @@ export const TodayListModal: React.FC<TodayListModalProps> = (props) => {
 }
 
 type TodayItemProps = {
-    item: PerennialTaskStats, // || AnnualTaskStats
-    onClick: (item: PerennialTaskStats) => void
+    item: TaskStats, // || AnnualTaskStats
+    onClick: (item: TaskStats) => void
 }
 
 const TodayItem: React.FC<TodayItemProps> = (props) => {

@@ -4,7 +4,7 @@ import { Milestone, Annual, Frequency } from "../../types";
 
 import { FullscreenModal } from "../common/FullscreenModal";
 import { AnnualContext } from "../AnnualContext";
-//import { getStoredItem } from "./AnnualStorage";
+import { getStoredItem } from "./AnnualStorage";
 import { useStyles } from "../../Styles";
 
 
@@ -28,20 +28,23 @@ const AddAnnualModal: React.FC<ModalProps> = (props) => {
   }
 
   const [currentItem, setCurrentItem] = React.useState<Annual>({ ...annualContext.currentItem });
-  React.useEffect(
-    () => setCurrentItem({ ...annualContext.currentItem }),
-    [annualContext.currentItem.id, annualContext.currentItem.parent]);
+
 
   const [parentName, setParentName] = React.useState<string>("");
 
   React.useEffect(() => {
+    setCurrentItem(annualContext.currentItem);
+  }, [annualContext.currentItem.id, annualContext.currentItem.parent])
+
+  React.useEffect(() => {
+    console.log("effect", !!annualContext.currentItem.parent);
     if (annualContext.currentItem.parent) {
-      //TODO getStoredItem(AnnualContext.currentItem.parent, (parent: Annual) => 
-      setParentName(annualContext.currentItem.parent);
+      getStoredItem(annualContext.currentItem.parent, (parent: Annual) => setParentName(parent.name));
     } else {
       setParentName("");
     }
-  }, [annualContext.currentItem.id])
+
+  }, [annualContext.currentItem.id]);
 
   return (
     <FullscreenModal

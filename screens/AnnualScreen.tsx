@@ -10,6 +10,7 @@ import { AnnualItem } from '../components/AnnualItem';
 import { Annual, AnnualEvent, AnnualSaveFn, newAnnual } from '../types';
 import { AnnualContext } from '../components/AnnualContext';
 import AddAnnualModal from '../components/annuals/AddAnnualModal';
+import { removeItem, storeData, storeItem } from '../components/annuals/AnnualStorage';
 
 export const AnnualScreen = () => {
   const styles = useStyles();
@@ -68,17 +69,17 @@ export const AnnualScreen = () => {
     let newData = Object.assign([] as (AnnualEvent | Annual)[], calendarEvents);
     if (!!found) {
       if (action == 'delete') {
-        //removeItem(item);
+        removeItem(item);
         newData.splice(i, 1);
       } else {
         newData.splice(i, 1, { ...item })
-        //storeItem(item);
+        storeItem(item);
       }
     } else {
       newData = [...calendarEvents, item];
-      //storeItem(item);
+      storeItem(item);
     }
-    //storeData(newData);
+    storeData(newData);
     setCalendarEvents(newData);
     setModalVisible(false);
   };
