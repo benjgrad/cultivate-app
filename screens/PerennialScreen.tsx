@@ -2,7 +2,7 @@ import * as React from "react";
 import { FlatList } from "react-native";
 import MainLayout from "../components/MainLayout";
 import uuid from "react-native-uuid";
-import { Frequency, Perennial, PerennialSaveFn } from "../types";
+import { Frequency, Perennial, PerennialSaveFn, Dictionary } from "../types";
 import { PerennialItem } from "../components/perennials/PerennialItems";
 import AddPerennialModal from "../components/perennials/AddPerennialModal";
 import { PerennialContext } from "../components/PerennialContext";
@@ -19,7 +19,7 @@ export default function PerennialScreen() {
   const [currentItem, setCurrentItem] = React.useState<Perennial>({ id: "", name: "" } as Perennial);
   const [saveCurrentItem, setSaveCurrentItem] = React.useState<PerennialSaveFn>((item: Perennial) => { });
   const [openParentAction, setOpenParentAction] = React.useState<() => void>(() => { });
-  const [perennialData, setPerennialData] = React.useState<Perennial[]>([]);
+  const [perennialData, setPerennialData] = React.useState<Dictionary<Perennial>>({});
   const [updateId, setUpdateId] = React.useState<string>(uuid.v4().toString());
 
   const setCurrentPerennial = (
@@ -34,28 +34,20 @@ export default function PerennialScreen() {
   };
 
   const saveChild = (item: Perennial, action: 'save' | 'delete') => {
-    let i = 0;
     setUpdateId(uuid.v4().toString());
-    const found = perennialData.find((elem: Perennial, iter: number) => {
-      i = iter;
-      return item.id == elem.id;
-    });
-    let newData = Object.assign([] as Perennial[], perennialData);
-    if (!!found) {
-      if (action == 'delete') {
-        removeItem(item);
-        newData.splice(i, 1);
-      } else {
-        newData.splice(i, 1, item)
-        storeItem(item);
-      }
-    } else {
-      newData = [...perennialData, item];
+    let newData = Object.assign({} as Dictionary<Perennial>, perennialData);
+    console.log(action);
+
+    if (action == 'save') {
+      newData[item.id] = item;
       storeItem(item);
     }
-    storeData(newData);
+    else {
+      delete newData[item.id];
+      removeItem(item);
+    }
     setPerennialData(newData);
-    setModalVisible(false);
+    storeData(newData)
   };
 
   return (
@@ -81,7 +73,7 @@ export default function PerennialScreen() {
         }}
       >
         <FlatList
-          data={perennialData}
+          data={Object.values(perennialData)}
           style={styles.modalScrollview}
           renderItem={({ item }: { item: Perennial }) =>
             <PerennialItem

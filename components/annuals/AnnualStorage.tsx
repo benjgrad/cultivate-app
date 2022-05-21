@@ -1,10 +1,12 @@
 import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Annual, TaskStats } from "../../types";
+import { Annual, AnnualEvent, Dictionary, TaskStats } from "../../types";
+import * as Calendar from 'expo-calendar';
 
 import uuid from "react-native-uuid";
+import moment from "moment";
 
-export const storeData = async (data: Annual[]) => {
+export const storeData = async (data: Dictionary<AnnualEvent>) => {
     try {
         await AsyncStorage.setItem(
             'annualData',
@@ -46,9 +48,13 @@ export const storeItem = async (data: Annual) => {
 
 export const removeItem = async (data: Annual) => {
     try {
+        console.log("deleted ", data.name);
         await AsyncStorage.removeItem(
             data.id
         );
+        Object.values(data.subtasks).forEach(async val => {
+            await removeItem(val);
+        });
     } catch (error) {
         // Error saving data
         console.log(error);
@@ -62,7 +68,7 @@ export const removeItem = async (data: Annual) => {
     }
 }
 
-export const getStoredItem = async (id: string, setAnnualData: ((item: Annual) => void)) => {
+export const getStoredItem = async (id: string, setAnnualData: ((item: Annual | AnnualEvent) => void)) => {
     try {
         const jsonData = await AsyncStorage.getItem(id);
         if (jsonData !== null) {
@@ -80,41 +86,94 @@ export const getStoredItem = async (id: string, setAnnualData: ((item: Annual) =
     }
 }
 
-export const getStoredData = async (setAnnualData: (items: Annual[]) => void, existingData?: Annual[]) => {
-    try {
-        const jsonData = await AsyncStorage.getItem('annualData');
-        if (jsonData !== null) {
-            // We have data!!
-            if (!existingData) {
-                existingData = [];
+export const getStoredData = async (setAnnualData: (items: Dictionary<AnnualEvent>) => void, existingData?: Annual[]) => {
+    const calendars = await getCalendars();
+    let items: Dictionary<AnnualEvent> = {};
+    if (!!calendars) {
+        const events = await Calendar.getEventsAsync(calendars,
+            moment().subtract(60, 'd').toDate(),
+            moment().add(100, 'd').toDate());
+        events.forEach(event => {
+            const item = {
+                name: event.title,
+                id: event.instanceId ?? event.id,
+                startTime: moment(event.startDate),
+                endTime: moment(event.endDate),
+                prepTime: 0,
+                subtasks: {},
+                parent: ""
+            } as AnnualEvent;
+            items[item.id] = item;
+            return item;
+        });
+        try {
+            const jsonData = await AsyncStorage.getItem('annualData');
+            if (jsonData != null) {
+                // We have data!!
+                if (!existingData) {
+                    existingData = [];
+                }
+                const savedData = JSON.parse(jsonData) as Dictionary<AnnualEvent>;
+                if (!!savedData)
+                    Object.values(savedData).forEach(savedItem => {
+                        items[savedItem.id] = { ...savedItem, startTime: items[savedItem.id].startTime, endTime: items[savedItem.id].endTime }
+                    });
+                console.log("got annual data: ", items.length);
+
+                setAnnualData(items);
             }
-            const newData = [...JSON.parse(jsonData), ...existingData]
-            setAnnualData(newData);
-            console.log("got data: ", newData.length);
+            else {
+                setAnnualData(items);
+            }
+        } catch (error) {
+            console.log(error);
+            Alert.alert(
+                "No data found",
+                "We can't find any any Annuals saved to this device.",
+                [
+                    { text: "OK", onPress: () => console.log("OK Pressed", error) }
+                ]
+            )
         }
-    } catch (error) {
-        Alert.alert(
-            "No data found",
-            "We can't find any any Annuals saved to this device.",
-            [
-                { text: "OK", onPress: () => console.log("OK Pressed") }
-            ]
-        )
+
     }
+
 }
 
-export const getAllItems = async (setAnnualData: (items: TaskStats[]) => void, onlySubtasks?: boolean) => {
+const getCalendars: () => Promise<string[] | undefined> = async () => {
+    const { status } = await Calendar.requestCalendarPermissionsAsync();
+    if (status === 'granted') {
+        let calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
+        const jsonData = await AsyncStorage.getItem('calendars');
+
+        if (!jsonData) {
+            return calendars.map(cal => cal.id);;
+        }
+
+        const displayCalendars = JSON.parse(jsonData);
+        calendars = calendars.filter((value, index, array) => {
+            return displayCalendars[value.id];
+        })
+        if (!calendars) {
+            return [];
+        }
+        return calendars.map(cal => cal.id);;
+
+    }
+
+}
+
+export const getAllItems = async (setAnnualData: (items: TaskStats[]) => void, existingItems: TaskStats[], onlySubtasks?: boolean) => {
     let tree: Annual[] = [];
-    let taskList: TaskStats[] = [];
-    await getStoredData((items) => tree = items);
+    let taskList: TaskStats[] = existingItems;
+    await getStoredData((items) => tree = Object.values(items));
     let stack = Object.assign([] as Annual[], tree);
 
     while (stack.length > 0) {
         const item = stack.pop();
         if (item) {
-            stack = stack.concat(item.subtasks);
-            //TODO get actual historical data
-            if (!onlySubtasks || item.subtasks.length == 0) {
+            stack = stack.concat(Object.values(item.subtasks));
+            if (!onlySubtasks || (item.parent && Object.values(item.subtasks).length == 0)) {
                 taskList.push({
                     taskId: uuid.v4().toString(),
                     isComplete: false,

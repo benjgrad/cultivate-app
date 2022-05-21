@@ -13,7 +13,7 @@ export type RootStackParamList = {
 };
 
 export type PerennialSaveFn = (item: Perennial, action: 'save' | 'delete') => void;
-export type AnnualSaveFn = (item: Annual | AnnualEvent, action: 'save' | 'delete') => void;
+export type AnnualSaveFn<T> = ((item: T, action: 'save' | 'delete') => void);
 
 export type BottomTabParamList = {
   Annuals: undefined;
@@ -25,7 +25,7 @@ export const newAnnual = () => {
   return {
     id: uuid.v4(),
     name: "",
-    subtasks: [],
+    subtasks: {},
     prepTime: 0,
     parent: ""
   } as Annual;
@@ -34,18 +34,20 @@ export const newAnnual = () => {
 export interface AnnualEvent extends Annual {
   startTime: moment.Moment,
   endTime: moment.Moment,
-  subtasks: Annual[]
 }
 
 export interface Annual extends BaseTask {
   parent: string,
   prepTime: number,
-  subtasks: Annual[]
+  subtasks: Dictionary<Annual>
 }
 
 export interface BaseTask {
   id: string;
   name: string;
+}
+export interface Dictionary<TValue> {
+  [key: string]: TValue;
 }
 
 export interface TaskStats extends TodayTask {

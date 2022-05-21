@@ -6,24 +6,26 @@ import moment from 'moment';
 import uuid from "react-native-uuid";
 import { FlatList } from 'react-native';
 import { useStyles } from '../Styles';
-import { AnnualItem } from '../components/AnnualItem';
-import { Annual, AnnualEvent, AnnualSaveFn, newAnnual } from '../types';
-import { AnnualContext } from '../components/AnnualContext';
+import { AnnualItem } from '../components/annuals/AnnualItem';
+import { Annual, AnnualEvent, AnnualSaveFn, Dictionary, newAnnual } from '../types';
+import { AnnualContext } from '../components/annuals/AnnualContext';
 import AddAnnualModal from '../components/annuals/AddAnnualModal';
-import { removeItem, storeData, storeItem } from '../components/annuals/AnnualStorage';
+import { getStoredData, removeItem, storeData, storeItem } from '../components/annuals/AnnualStorage';
+import { AnnualEventItem } from '../components/annuals/AnnualEventItem';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const AnnualScreen = () => {
   const styles = useStyles();
-  const [calendarEvents, setCalendarEvents] = React.useState<(AnnualEvent | Annual)[]>([]);
+  const [calendarEvents, setCalendarEvents] = React.useState<Dictionary<AnnualEvent>>({});
   const [modalVisible, setModalVisible] = React.useState<boolean>(false);
-  const [currentItem, setCurrentItem] = React.useState<Annual>(newAnnual());
-  const [saveCurrentItem, setSaveCurrentItem] = React.useState<AnnualSaveFn>((item: Annual) => { });
+  const [currentItem, setCurrentItem] = React.useState<Annual | AnnualEvent>(newAnnual());
+  const [saveCurrentItem, setSaveCurrentItem] = React.useState<AnnualSaveFn<Annual | AnnualEvent>>((item: Annual) => { });
   const [openParentAction, setOpenParentAction] = React.useState<() => void>(() => { });
   const [updateId, setUpdateId] = React.useState<string>(uuid.v4().toString());
 
   const setCurrentAnnual = (
-    newItem: Annual,
-    saveCurrentItem: AnnualSaveFn,
+    newItem: Annual | AnnualEvent,
+    saveCurrentItem: AnnualSaveFn<Annual> | AnnualSaveFn<AnnualEvent>,
     setParentAsCurrent: () => void
   ) => {
     setModalVisible(true);
@@ -33,51 +35,18 @@ export const AnnualScreen = () => {
   };
 
 
-  React.useEffect(() => {
-    (async () => {
-      const { status } = await Calendar.requestCalendarPermissionsAsync();
-      if (status === 'granted') {
-        const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
-        const cals: string[] = calendars.map(cal => cal.id);
-        const events = await Calendar.getEventsAsync(cals,
-          moment().subtract(60, 'd').toDate(),
-          moment().add(100, 'd').toDate());
-        let annuals: AnnualEvent[] = events.map(event => {
-          return {
-            name: event.title,
-            id: event.instanceId ?? event.id,
-            startTime: moment(event.startDate),
-            endTime: moment(event.endDate),
-            prepTime: 0,
-            subtasks: [],
-            parent: ""
-          };
-        });
+  React.useEffect(() => { getStoredData(setCalendarEvents); }, []);
 
-        setCalendarEvents(annuals);
-      }
-    })();
-  }, []);
-
-  const saveChild = (item: Annual | AnnualEvent, action: 'save' | 'delete') => {
-    let i = 0;
+  const saveChild = (item: AnnualEvent, action: 'save' | 'delete') => {
     setUpdateId(uuid.v4().toString());
-    const found = calendarEvents.find((elem: Annual, iter: number) => {
-      i = iter;
-      return item.id == elem.id;
-    });
-    let newData = Object.assign([] as (AnnualEvent | Annual)[], calendarEvents);
-    if (!!found) {
-      if (action == 'delete') {
-        removeItem(item);
-        newData.splice(i, 1);
-      } else {
-        newData.splice(i, 1, { ...item })
-        storeItem(item);
-      }
-    } else {
-      newData = [...calendarEvents, item];
+    let newData = Object.assign({} as Dictionary<AnnualEvent>, calendarEvents);
+    if (action == 'save') {
+      newData[item.id] = item;
       storeItem(item);
+    }
+    else {
+      delete newData[item.id];
+      removeItem(item);
     }
     storeData(newData);
     setCalendarEvents(newData);
@@ -85,7 +54,7 @@ export const AnnualScreen = () => {
   };
 
   return (
-    <MainLayout title="Annuals" >
+    <MainLayout title="Annuals" addAction={async () => await AsyncStorage.clear()}>
       <AnnualContext.Provider
         value={{
           currentItem,
@@ -97,10 +66,10 @@ export const AnnualScreen = () => {
 
         <FlatList
           style={styles.modalScrollview}
-          data={calendarEvents}
+          data={Object.values(calendarEvents)}
           keyExtractor={(cal: Annual | AnnualEvent) => cal.id}
           renderItem={({ item }) => {
-            return <AnnualItem
+            return <AnnualEventItem
               {...item}
               onPress={() => { }}
               propogateChange={saveChild}

@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { FlatList } from "react-native";
 import { Text, TouchableOpacity, View } from "react-native";
 import * as PerennialStorage from "../perennials/PerennialStorage";
+import * as AnnualStorage from "../annuals/AnnualStorage";
 import { TodayTask, Perennial, TaskStats } from "../../types";
 import { FullscreenModal } from "../common/FullscreenModal";
 import { useStyles } from "../../Styles";
@@ -14,7 +15,7 @@ type TodayListModalProps = {
 }
 
 export const TodayListModal: React.FC<TodayListModalProps> = (props) => {
-    const [perennialTasks, setPerennialTasks] = React.useState<TaskStats[]>([]);
+    const [tasks, setTasks] = React.useState<TaskStats[]>([]);
     const [timeModalVisible, setTimeModalVisible] = React.useState(false);
     const [currentTask, setCurrentTask] = React.useState<TodayTask>({ id: '', name: '', isComplete: false });
     const styles = useStyles();
@@ -22,7 +23,12 @@ export const TodayListModal: React.FC<TodayListModalProps> = (props) => {
         setTimeModalVisible(!timeModalVisible);
         props.addTask(item);
     }
-    useEffect(() => { PerennialStorage.getAllItems(setPerennialTasks, true) }, [props.modalVisible]);
+    useEffect(() => {
+        let newTasks: TaskStats[] = [];
+        PerennialStorage.getAllItems((storedTasks) => newTasks = storedTasks, newTasks, true);
+        AnnualStorage.getAllItems(setTasks, newTasks, true);
+    }, [props.modalVisible]);
+
 
     return (
         <FullscreenModal
@@ -32,7 +38,7 @@ export const TodayListModal: React.FC<TodayListModalProps> = (props) => {
         >
             <Text></Text>
             <FlatList
-                data={perennialTasks}
+                data={tasks}
                 style={styles.modalScrollview}
                 renderItem={({ item }) => {
                     return (<TodayItem item={item} onClick={(item) => {

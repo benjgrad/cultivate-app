@@ -1,9 +1,9 @@
 import * as React from "react";
 import { KeyboardAvoidingView, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { Milestone, Annual, Frequency } from "../../types";
+import { Milestone, Annual, Frequency, AnnualEvent } from "../../types";
 
 import { FullscreenModal } from "../common/FullscreenModal";
-import { AnnualContext } from "../AnnualContext";
+import { AnnualContext } from "./AnnualContext";
 import { getStoredItem } from "./AnnualStorage";
 import { useStyles } from "../../Styles";
 
@@ -19,15 +19,7 @@ const AddAnnualModal: React.FC<ModalProps> = (props) => {
 
   const annualContext = React.useContext(AnnualContext);
 
-
-  //TODO figure out why this isn't working
-  const safeClone = (item: Annual) => {
-    return {
-      ...annualContext.currentItem
-    };
-  }
-
-  const [currentItem, setCurrentItem] = React.useState<Annual>({ ...annualContext.currentItem });
+  const [currentItem, setCurrentItem] = React.useState<Annual | AnnualEvent>({ ...annualContext.currentItem });
 
 
   const [parentName, setParentName] = React.useState<string>("");
@@ -37,7 +29,6 @@ const AddAnnualModal: React.FC<ModalProps> = (props) => {
   }, [annualContext.currentItem.id, annualContext.currentItem.parent])
 
   React.useEffect(() => {
-    console.log("effect", !!annualContext.currentItem.parent);
     if (annualContext.currentItem.parent) {
       getStoredItem(annualContext.currentItem.parent, (parent: Annual) => setParentName(parent.name));
     } else {

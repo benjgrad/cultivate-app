@@ -1,7 +1,7 @@
 import * as React from 'react';
 import MainLayout from '../components/MainLayout';
 
-import { TodayTask } from '../types'
+import { Dictionary, TodayTask } from '../types'
 
 import { FlatList } from 'react-native';
 import moment from 'moment';
@@ -12,61 +12,61 @@ import { useStyles } from '../Styles';
 import { TodayListModal } from '../components/today/TodayListModal';
 
 
-const taskData = [
-    {
-        id: uuid.v4(),
-        name: 'Workout',
-        isComplete: false,
-        startTime: moment(),
-        endTime: moment()
-    },
-    {
-        id: uuid.v4(),
-        name: 'Make dinner',
-        isComplete: false,
-        startTime: moment(),
-        endTime: moment()
-    },
-    {
-        id: uuid.v4(),
-        name: 'Work on code for app',
-        isComplete: false,
-        startTime: moment(),
-        endTime: moment()
-    },
-    {
-        id: uuid.v4(),
-        name: 'Find waldo',
-        isComplete: false,
-        startTime: moment(),
-        endTime: moment()
-    },
-    {
-        id: uuid.v4(),
-        name: 'Call Mom',
-        isComplete: false,
-        startTime: moment(),
-        endTime: moment()
-    },
-    {
-        id: uuid.v4(),
-        name: 'Vacuum',
-        isComplete: false,
-        startTime: moment(),
-        endTime: moment()
-    },
-    {
-        id: uuid.v4(),
-        name: 'Book a vaccine',
-        isComplete: false,
-        startTime: moment(),
-        endTime: moment()
-    },
-] as TodayTask[];
+// const taskData = [
+//     {
+//         id: uuid.v4(),
+//         name: 'Workout',
+//         isComplete: false,
+//         startTime: moment(),
+//         endTime: moment()
+//     },
+//     {
+//         id: uuid.v4(),
+//         name: 'Make dinner',
+//         isComplete: false,
+//         startTime: moment(),
+//         endTime: moment()
+//     },
+//     {
+//         id: uuid.v4(),
+//         name: 'Work on code for app',
+//         isComplete: false,
+//         startTime: moment(),
+//         endTime: moment()
+//     },
+//     {
+//         id: uuid.v4(),
+//         name: 'Find waldo',
+//         isComplete: false,
+//         startTime: moment(),
+//         endTime: moment()
+//     },
+//     {
+//         id: uuid.v4(),
+//         name: 'Call Mom',
+//         isComplete: false,
+//         startTime: moment(),
+//         endTime: moment()
+//     },
+//     {
+//         id: uuid.v4(),
+//         name: 'Vacuum',
+//         isComplete: false,
+//         startTime: moment(),
+//         endTime: moment()
+//     },
+//     {
+//         id: uuid.v4(),
+//         name: 'Book a vaccine',
+//         isComplete: false,
+//         startTime: moment(),
+//         endTime: moment()
+//     },
+// ] as TodayTask[];
 
 const TodayScreen: React.FC = () => {
     const [modalVisible, setModalVisible] = React.useState<boolean>(false);
-    const [todayItems, setTodayItems] = React.useState<TodayTask[]>(taskData);
+    const [todayItems, setTodayItems] = React.useState<TodayTask[]>([]);
     React.useEffect(() => { }, []);
 
     const styles = useStyles();

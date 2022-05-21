@@ -1,10 +1,10 @@
 import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Perennial, TaskStats } from "../../types";
+import { Dictionary, Perennial, TaskStats } from "../../types";
 
 import uuid from "react-native-uuid";
 
-export const storeData = async (data: Perennial[]) => {
+export const storeData = async (data: Dictionary<Perennial>) => {
     try {
         await AsyncStorage.setItem(
             'perennialData',
@@ -46,9 +46,13 @@ export const storeItem = async (data: Perennial) => {
 
 export const removeItem = async (data: Perennial) => {
     try {
+        console.log("deleted ", data.name);
         await AsyncStorage.removeItem(
             data.id
         );
+        Object.values(data.subtasks).forEach(async val => {
+            await removeItem(val);
+        });
     } catch (error) {
         // Error saving data
         console.log(error);
@@ -63,6 +67,9 @@ export const removeItem = async (data: Perennial) => {
 }
 
 export const getStoredItem = async (id: string, setPerennialData: ((item: Perennial) => void)) => {
+
+    const data = await AsyncStorage.getAllKeys();
+    console.log("allKeys", data);
     try {
         const jsonData = await AsyncStorage.getItem(id);
         if (jsonData !== null) {
@@ -80,15 +87,15 @@ export const getStoredItem = async (id: string, setPerennialData: ((item: Perenn
     }
 }
 
-export const getStoredData = async (setPerennialData: (items: Perennial[]) => void, existingData?: Perennial[]) => {
+export const getStoredData = async (setPerennialData: (items: Dictionary<Perennial>) => void, existingData?: Dictionary<Perennial>) => {
     try {
         const jsonData = await AsyncStorage.getItem('perennialData');
         if (jsonData !== null) {
             // We have data!!
             if (!existingData) {
-                existingData = [];
+                existingData = {};
             }
-            const newData = [...JSON.parse(jsonData), ...existingData]
+            const newData = { ...JSON.parse(jsonData), ...existingData };
             setPerennialData(newData);
             console.log("got data: ", newData.length);
         }
@@ -103,11 +110,11 @@ export const getStoredData = async (setPerennialData: (items: Perennial[]) => vo
     }
 }
 
-export const getAllItems = async (setPerennialData: (items: TaskStats[]) => void, onlySubtasks?: boolean) => {
-    let tree: Perennial[] = [];
-    let taskList: TaskStats[] = [];
+export const getAllItems = async (setPerennialData: (items: TaskStats[]) => void, existingItems: TaskStats[], onlySubtasks?: boolean) => {
+    let tree: Dictionary<Perennial> = {};
+    let taskList: TaskStats[] = existingItems;
     await getStoredData((items) => tree = items);
-    let stack = Object.assign([] as Perennial[], tree);
+    let stack = Object.assign([] as Perennial[], Object.values(tree));
 
     while (stack.length > 0) {
         const item = stack.pop();
