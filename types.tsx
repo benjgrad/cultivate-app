@@ -62,8 +62,8 @@ export interface Milestone extends BaseTask {
 
 export interface TodayTask extends BaseTask {
   isComplete: boolean;
-  startTime?: moment.Moment;
-  endTime?: moment.Moment;
+  startTime: moment.Moment;
+  endTime: moment.Moment;
 }
 
 export interface Perennial extends BaseTask {

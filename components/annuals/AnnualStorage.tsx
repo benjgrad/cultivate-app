@@ -91,7 +91,8 @@ export const getStoredData = async (setAnnualData: (items: Dictionary<AnnualEven
     let items: Dictionary<AnnualEvent> = {};
     if (!!calendars) {
         const events = await Calendar.getEventsAsync(calendars,
-            moment().subtract(60, 'd').toDate(),
+            moment()//.subtract(60, 'd')
+                .toDate(),
             moment().add(100, 'd').toDate());
         events.forEach(event => {
             const item = {

@@ -6,68 +6,17 @@ import { Dictionary, TodayTask } from '../types'
 import { FlatList } from 'react-native';
 import moment from 'moment';
 import uuid from 'react-native-uuid';
+import * as TodayStorage from "../components/today/TodayStorage";
 import SwipeItem from '../components/common/SwipeItem';
 import { TodayItem } from '../components/today/TodayItem';
 import { useStyles } from '../Styles';
 import { TodayListModal } from '../components/today/TodayListModal';
 
 
-// const taskData = [
-//     {
-//         id: uuid.v4(),
-//         name: 'Workout',
-//         isComplete: false,
-//         startTime: moment(),
-//         endTime: moment()
-//     },
-//     {
-//         id: uuid.v4(),
-//         name: 'Make dinner',
-//         isComplete: false,
-//         startTime: moment(),
-//         endTime: moment()
-//     },
-//     {
-//         id: uuid.v4(),
-//         name: 'Work on code for app',
-//         isComplete: false,
-//         startTime: moment(),
-//         endTime: moment()
-//     },
-//     {
-//         id: uuid.v4(),
-//         name: 'Find waldo',
-//         isComplete: false,
-//         startTime: moment(),
-//         endTime: moment()
-//     },
-//     {
-//         id: uuid.v4(),
-//         name: 'Call Mom',
-//         isComplete: false,
-//         startTime: moment(),
-//         endTime: moment()
-//     },
-//     {
-//         id: uuid.v4(),
-//         name: 'Vacuum',
-//         isComplete: false,
-//         startTime: moment(),
-//         endTime: moment()
-//     },
-//     {
-//         id: uuid.v4(),
-//         name: 'Book a vaccine',
-//         isComplete: false,
-//         startTime: moment(),
-//         endTime: moment()
-//     },
-// ] as TodayTask[];
-
 const TodayScreen: React.FC = () => {
     const [modalVisible, setModalVisible] = React.useState<boolean>(false);
     const [todayItems, setTodayItems] = React.useState<TodayTask[]>([]);
-    React.useEffect(() => { }, []);
+    React.useEffect(() => { TodayStorage.getStoredData(setTodayItems) }, []);
 
     const styles = useStyles();
 
@@ -81,9 +30,10 @@ const TodayScreen: React.FC = () => {
         });
         if (!!found) {
             const todayItem = { ...todayItems[i], isComplete: !todayItems[i].isComplete };
-            let newItems = todayItems.slice();
-            newItems.splice(i, 1, todayItem);
-            setTodayItems(newItems);
+            let newData = todayItems.slice();
+            newData.splice(i, 1, todayItem);
+            setTodayItems(newData);
+            TodayStorage.storeData(newData);
         }
     }
 
@@ -104,7 +54,15 @@ const TodayScreen: React.FC = () => {
             newData = [...todayItems, item];
         }
         setTodayItems(newData);
+        TodayStorage.storeData(newData);
     }
+
+    const renderData = todayItems.sort((a, b) => {
+        if (a.startTime == b.startTime) {
+            return a.endTime > b.endTime ? 1 : -1;
+        }
+        return a.startTime > b.endTime ? 1 : -1;
+    });
 
     return (
         <MainLayout
@@ -114,7 +72,7 @@ const TodayScreen: React.FC = () => {
             title={moment().format('MMMM D')}
         >
             <FlatList
-                data={todayItems}
+                data={renderData}
                 style={styles.modalScrollview}
                 renderItem={({ item }: { item: TodayTask }) =>
                     <SwipeItem >

@@ -3,11 +3,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TodayTask } from "../../types";
 
 import uuid from "react-native-uuid";
+import moment from "moment";
 
 export const storeData = async (data: TodayTask[]) => {
     try {
         await AsyncStorage.setItem(
-            'todayData',
+            moment().format('YYYYMMMMDD'),
             JSON.stringify(data)
         );
         console.log('saved data');
@@ -82,20 +83,25 @@ export const getStoredItem = async (id: string, setTodayTaskData: ((item: TodayT
 
 export const getStoredData = async (setTodayTaskData: (items: TodayTask[]) => void, existingData?: TodayTask[]) => {
     try {
-        const jsonData = await AsyncStorage.getItem('todayData');
+        const jsonData = await AsyncStorage.getItem(moment().format('YYYYMMMMDD'));
         if (jsonData !== null) {
             // We have data!!
             if (!existingData) {
                 existingData = [];
             }
             const newData = [...JSON.parse(jsonData), ...existingData]
+            console.log(newData.map(item => {
+                item.startTime = moment(item.startTime);
+                item.endTime = moment(item.endTime);
+                return item;
+            }))
             setTodayTaskData(newData);
             console.log("got data: ", newData.length);
         }
     } catch (error) {
         Alert.alert(
-            "No data found",
-            "We can't find any any tasks saved to this device.",
+            "What will you do today?",
+            "Add some items to start cultivating your interests",
             [
                 { text: "OK", onPress: () => console.log("OK Pressed") }
             ]
