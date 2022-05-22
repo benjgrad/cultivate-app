@@ -36,6 +36,7 @@ export default function BottomTabNavigator() {
         name="Annuals"
         component={AnnualScreen}
         options={{
+          headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="leaf-outline" color={color} />,
         }}
       />
@@ -43,7 +44,7 @@ export default function BottomTabNavigator() {
         name="Today"
         component={TodayScreen}
         options={{
-          title: undefined,
+          headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="home-outline" color={color} />,
         }}
       />
@@ -51,6 +52,7 @@ export default function BottomTabNavigator() {
         name="Perennials"
         component={Perennials}
         options={{
+          headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="rose-outline" color={color} />,
         }}
       />

@@ -8,22 +8,24 @@ import { checkBoxHeight, useStyles } from '../../Styles';
 
 type TodayItemProps = TodayTask & {
     toggleComplete: () => void;
+    onOpen: (item: TodayTask) => void;
 };
 export const TodayItem: React.FC<TodayItemProps> = (props) => {
     const styles = useStyles();
     return (
-        <TouchableOpacity onPress={props.toggleComplete}>
-            <View style={styles.box}>
-                <View style={styles.textContainer}>
-                    <Text style={styles.name}>{props.name}</Text>
-                    {!!props.startTime && !!props.endTime &&
-                        <Text style={styles.time}>{props.startTime?.format('h:mma') + ' - ' + props.endTime?.format('h:mma')}</Text>}
-                </View>
+        <View style={styles.box}>
+            <TouchableOpacity onPress={() => props.onOpen(props)} style={styles.textContainer}>
+                <Text style={styles.name}>{props.name}</Text>
+                {!!props.startTime && !!props.endTime &&
+                    <Text style={styles.time}>{props.startTime?.format('h:mma') + ' - ' + props.endTime?.format('h:mma')}</Text>}
+
+            </TouchableOpacity>
+            <TouchableOpacity onPress={props.toggleComplete}>
                 <View style={styles.todayCheckBox}>
                     {props.isComplete && <Ionicons size={checkBoxHeight - 6} name="checkmark-outline" />}
                 </View>
-            </View>
-        </TouchableOpacity>
+            </TouchableOpacity>
+        </View>
     );
 };
 

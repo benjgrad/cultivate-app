@@ -7,7 +7,8 @@ import { TodayTask } from '../../types';
 
 interface TimePickerModalProps extends TodayTask {
     modalVisible: boolean,
-    onClose: (item: TodayTask) => void
+    onClose: (item: TodayTask) => void,
+    onDelete: (item: TodayTask) => void
 }
 
 
@@ -40,7 +41,6 @@ export const TimePickerModal: React.FC<TimePickerModalProps> = (props) => {
                 <TouchableOpacity
                     style={styles.modalDone}
                     onPress={() => {
-
                         props.onClose({
                             ...props,
                             name: name ? name : props.name,
@@ -83,6 +83,15 @@ export const TimePickerModal: React.FC<TimePickerModalProps> = (props) => {
                         onChange={onChange(setEndTime)}
                     />
                 </View>
+            </View>
+
+            <View style={styles.deleteBtn}>
+                <TouchableOpacity
+                    onPress={() => {
+                        props.onDelete(props);
+                    }}>
+                    <Text style={styles.deleteBtnText}>Delete</Text>
+                </TouchableOpacity>
             </View>
         </View>
     </Modal>

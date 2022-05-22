@@ -35,7 +35,7 @@ export const AnnualScreen = () => {
   };
 
 
-  React.useEffect(() => { getStoredData(setCalendarEvents); }, []);
+  React.useEffect(() => { getStoredData(setCalendarEvents); }, [updateId]);
 
   const saveChild = (item: AnnualEvent, action: 'save' | 'delete') => {
     setUpdateId(uuid.v4().toString());

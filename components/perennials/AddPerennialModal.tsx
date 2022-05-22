@@ -93,7 +93,6 @@ const AddPerennialModal: React.FC<ModalProps> = (props) => {
       <View style={styles.deleteBtn}>
         <TouchableOpacity
           onPress={() => {
-            console.log(currentItem.id);
             perennialContext.saveCurrentItem(currentItem, 'delete');
             setModalVisible(!modalVisible);
           }}

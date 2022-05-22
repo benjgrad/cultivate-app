@@ -177,6 +177,8 @@ export const getAllItems = async (setAnnualData: (items: TaskStats[]) => void, e
             if (!onlySubtasks || (item.parent && Object.values(item.subtasks).length == 0)) {
                 taskList.push({
                     taskId: uuid.v4().toString(),
+                    startTime: moment("12:00PM"),
+                    endTime: moment("1:00PM"),
                     isComplete: false,
                     numComplete: 0,
                     ...item

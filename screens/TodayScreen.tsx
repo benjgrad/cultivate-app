@@ -11,11 +11,14 @@ import SwipeItem from '../components/common/SwipeItem';
 import { TodayItem } from '../components/today/TodayItem';
 import { useStyles } from '../Styles';
 import { TodayListModal } from '../components/today/TodayListModal';
+import { TimePickerModal } from '../components/today/TimePickerModal';
 
 
 const TodayScreen: React.FC = () => {
     const [modalVisible, setModalVisible] = React.useState<boolean>(false);
+    const [timeModalVisible, setTimeModalVisible] = React.useState(false);
     const [todayItems, setTodayItems] = React.useState<TodayTask[]>([]);
+    const [currenItem, setCurrentItem] = React.useState<TodayTask>();
     React.useEffect(() => { TodayStorage.getStoredData(setTodayItems) }, []);
 
     const styles = useStyles();
@@ -43,10 +46,12 @@ const TodayScreen: React.FC = () => {
             i = iter;
             return item.id == elem.id;
         });
-        let newData = todayItems;
+        let newData = Object.assign([], todayItems) as TodayTask[];
         if (!!found) {
             if (action == 'delete') {
+                console.log(newData.length);
                 newData.splice(i, 1);
+                console.log(newData.length);
             } else {
                 newData.splice(i, 1, item)
             }
@@ -57,11 +62,8 @@ const TodayScreen: React.FC = () => {
         TodayStorage.storeData(newData);
     }
 
-    const renderData = todayItems.sort((a, b) => {
-        if (a.startTime == b.startTime) {
-            return a.endTime > b.endTime ? 1 : -1;
-        }
-        return a.startTime > b.endTime ? 1 : -1;
+    todayItems.sort((a, b) => {
+        return a.startTime.isAfter(b.startTime) ? 1 : -1;
     });
 
     return (
@@ -72,20 +74,33 @@ const TodayScreen: React.FC = () => {
             title={moment().format('MMMM D')}
         >
             <FlatList
-                data={renderData}
+                data={todayItems}
                 style={styles.modalScrollview}
                 renderItem={({ item }: { item: TodayTask }) =>
-                    <SwipeItem >
-                        <TodayItem
-                            toggleComplete={() => handleComplete(item.id)}
-                            {...item} />
-                    </SwipeItem>}
+                    <TodayItem
+                        {...item}
+                        toggleComplete={() => handleComplete(item.id)}
+                        onOpen={(item) => {
+                            setCurrentItem(item);
+                            setTimeModalVisible(true);
+                        }} />}
                 keyExtractor={(item: TodayTask) => item.id} />
             <TodayListModal
                 modalVisible={modalVisible}
                 toggleModalVisible={() => setModalVisible(!modalVisible)}
                 addTask={saveTask}
             />
+            <TimePickerModal
+                {...currenItem}
+                modalVisible={timeModalVisible}
+                onClose={(item) => {
+                    setTimeModalVisible(false);
+                    saveTask(item);
+                }}
+                onDelete={(item) => {
+                    setTimeModalVisible(false);
+                    saveTask(item, 'delete');
+                }} />
         </MainLayout >
     );
 }
