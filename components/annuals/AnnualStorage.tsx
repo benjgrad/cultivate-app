@@ -86,6 +86,12 @@ export const getStoredItem = async (id: string, setAnnualData: ((item: Annual | 
     }
 }
 
+const formatDeserializedEvent = (data: any) => {
+    data.startTime = moment(data.startTime);
+    data.endTime = moment(data.endTime);
+    return data as AnnualEvent;
+}
+
 export const getStoredData = async (setAnnualData: (items: Dictionary<AnnualEvent>) => void, existingData?: Annual[]) => {
     const calendars = await getCalendars();
     let items: Dictionary<AnnualEvent> = {};
@@ -114,10 +120,15 @@ export const getStoredData = async (setAnnualData: (items: Dictionary<AnnualEven
                 if (!existingData) {
                     existingData = [];
                 }
-                const savedData = JSON.parse(jsonData) as Dictionary<AnnualEvent>;
+                const savedData = JSON.parse(jsonData);
                 if (!!savedData)
-                    Object.values(savedData).forEach(savedItem => {
-                        items[savedItem.id] = { ...savedItem, startTime: items[savedItem.id].startTime, endTime: items[savedItem.id].endTime }
+                    Object.values(savedData).forEach(item => {
+                        let savedItem = formatDeserializedEvent(item);
+                        if (items[savedItem.id]) {
+                            savedItem.startTime = items[savedItem.id].startTime;
+                            savedItem.endTime = items[savedItem.id].endTime;
+                        }
+                        items[savedItem.id] = { ...savedItem }
                     });
                 console.log("got annual data: ", items.length);
 
@@ -148,7 +159,7 @@ const getCalendars: () => Promise<string[] | undefined> = async () => {
         const jsonData = await AsyncStorage.getItem('calendars');
 
         if (!jsonData) {
-            return calendars.map(cal => cal.id);;
+            return calendars.map(cal => cal.id);
         }
 
         const displayCalendars = JSON.parse(jsonData);
