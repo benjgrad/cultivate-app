@@ -3,7 +3,7 @@ import { FlatList } from "react-native";
 import { Text, TouchableOpacity, View } from "react-native";
 import * as PerennialStorage from "../perennials/PerennialStorage";
 import * as AnnualStorage from "../annuals/AnnualStorage";
-import { TodayTask, Perennial, TaskStats } from "../../types";
+import { TodayTask, Perennial, TaskStats, newTodayTask } from "../../types";
 import { FullscreenModal } from "../common/FullscreenModal";
 import { useStyles } from "../../Styles";
 import { TimePickerModal } from "./TimePickerModal";
@@ -17,7 +17,7 @@ type TodayListModalProps = {
 export const TodayListModal: React.FC<TodayListModalProps> = (props) => {
     const [tasks, setTasks] = React.useState<TaskStats[]>([]);
     const [timeModalVisible, setTimeModalVisible] = React.useState(false);
-    const [currentTask, setCurrentTask] = React.useState<TodayTask>({ id: '', name: '', isComplete: false });
+    const [currentTask, setCurrentTask] = React.useState<TodayTask>(newTodayTask());
     const styles = useStyles();
     const onClose = (item: TodayTask) => {
         setTimeModalVisible(!timeModalVisible);

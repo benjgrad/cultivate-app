@@ -54,7 +54,8 @@ export const AnnualScreen = () => {
   };
 
   return (
-    <MainLayout title="Annuals" addAction={async () => await AsyncStorage.clear()}>
+    <MainLayout title="Annuals" //addAction={async () => await AsyncStorage.clear()}
+    >
       <AnnualContext.Provider
         value={{
           currentItem,

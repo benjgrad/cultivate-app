@@ -81,13 +81,17 @@ export const AnnualEventItem: React.FC<AnnualEventItemProps> = (props) => {
         console.log({ startTime: props.startTime, endTime: props.endTime, name: props.name })
         console.log(e);
     }
+    let dateString = props.startTime.format('MMMM DD h:mma') + ' - ' + props.endTime.format('h:mma');
+    if (props.endTime.isAfter(props.startTime, 'date')) {
+        dateString = props.startTime.format('MMMM DD') + ' - ' + props.endTime.format('MMMM DD');
+    }
     return <>
         <TouchableOpacity onPress={setThisToCurrent}>
             <View style={styles.box}>
                 <View style={styles.textContainer}>
                     <Text style={styles.name}>{props.name}</Text>
                     {!!props.startTime && !!props.endTime &&
-                        <Text style={styles.time}>{props.startTime.format('MMMM DD h:mma') + ' - ' + props.endTime.format('h:mma')}</Text>}
+                        <Text style={styles.time}>{dateString}</Text>}
                 </View>
                 <TouchableOpacity
                     onPress={() => {

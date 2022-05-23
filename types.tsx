@@ -60,6 +60,16 @@ export interface Milestone extends BaseTask {
   isComplete?: boolean;
 }
 
+export const newTodayTask = () => {
+  let startTime = moment();
+  startTime.set({ h: 12, m: 0, s: 0, millisecond: 0 });
+  return {
+    isComplete: false,
+    startTime: startTime,
+    endTime: startTime.add(1, 'h')
+  } as TodayTask;
+}
+
 export interface TodayTask extends BaseTask {
   isComplete: boolean;
   startTime: moment.Moment;

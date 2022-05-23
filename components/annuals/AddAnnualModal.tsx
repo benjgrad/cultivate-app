@@ -20,12 +20,14 @@ const AddAnnualModal: React.FC<ModalProps> = (props) => {
   const annualContext = React.useContext(AnnualContext);
 
   const [currentItem, setCurrentItem] = React.useState<Annual | AnnualEvent>({ ...annualContext.currentItem });
+  const [prepRender, setPrepRender] = React.useState<string>(currentItem.prepTime.toString());
 
 
   const [parentName, setParentName] = React.useState<string>("");
 
   React.useEffect(() => {
     setCurrentItem(annualContext.currentItem);
+    setPrepRender(annualContext.currentItem.prepTime.toString());
   }, [annualContext.currentItem.id, annualContext.currentItem.parent])
 
   React.useEffect(() => {
@@ -61,6 +63,18 @@ const AddAnnualModal: React.FC<ModalProps> = (props) => {
         style={[styles.inputRow, styles.nameTextField]}
         placeholder={"-"}
         value={parentName}
+      />
+      <Text style={styles.textInputLabel}>Prep time</Text>
+      <TextInput
+        style={[styles.inputRow, styles.nameTextField]}
+        keyboardType='numeric'
+        placeholder={"-"}
+        onChangeText={(prepTime: string) => {
+          prepTime = prepTime.replace(/[^0-9]/g, '');
+          setCurrentItem({ ...currentItem, prepTime: +prepTime });
+          setPrepRender(prepTime);
+        }}
+        value={prepRender}
       />
 
       <View style={styles.deleteBtn}>

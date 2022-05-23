@@ -17,7 +17,8 @@ export const TimePickerModal: React.FC<TimePickerModalProps> = (props) => {
 
     const [startTime, setStartTime] = React.useState<moment.Moment>(moment());
     const [endTime, setEndTime] = React.useState<moment.Moment>(moment());
-    const [name, setName] = React.useState('');
+    const [name, setName] = React.useState(props.name);
+    React.useEffect(() => { setName(props.name) }, [props.id]);
 
     const mode: any = 'time'
 
@@ -56,6 +57,7 @@ export const TimePickerModal: React.FC<TimePickerModalProps> = (props) => {
                 onChangeText={(name: string) => {
                     setName(name);
                 }}
+                value={name}
                 placeholder={props.name}
             />
             <View style={styles.inline}>

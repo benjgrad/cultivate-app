@@ -95,11 +95,13 @@ const formatDeserializedEvent = (data: any) => {
 export const getStoredData = async (setAnnualData: (items: Dictionary<AnnualEvent>) => void, existingData?: Annual[]) => {
     const calendars = await getCalendars();
     let items: Dictionary<AnnualEvent> = {};
+    let startTime = moment();
+    startTime.set({ h: 0, m: 0 });
     if (!!calendars) {
         const events = await Calendar.getEventsAsync(calendars,
-            moment()//.subtract(60, 'd')
+            startTime
                 .toDate(),
-            moment().add(100, 'd').toDate());
+            startTime.add(100, 'd').toDate());
         events.forEach(event => {
             const item = {
                 name: event.title,
