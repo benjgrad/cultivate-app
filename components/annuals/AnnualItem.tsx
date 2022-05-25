@@ -75,6 +75,7 @@ export const AnnualItem: React.FC<AnnualItemProps> = (props) => {
                 <TouchableOpacity
                     onPress={() => {
                         const newItem = newAnnual();
+                        newItem.dueDate = thisItem.dueDate;
                         newItem.parent = thisItem.id;
                         annualContext.setCurrentItem(newItem, addSubtask, props.setParentAsCurrent)
                     }}

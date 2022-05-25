@@ -1,8 +1,9 @@
 import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Dictionary, Perennial, TaskStats } from "../../types";
+import { Dictionary, newTodayTask, Perennial, Stats, TodayTask } from "../../types";
 
 import uuid from "react-native-uuid";
+import moment from "moment";
 
 export const storeData = async (data: Dictionary<Perennial>) => {
     try {
@@ -69,7 +70,6 @@ export const removeItem = async (data: Perennial) => {
 export const getStoredItem = async (id: string, setPerennialData: ((item: Perennial) => void)) => {
 
     const data = await AsyncStorage.getAllKeys();
-    console.log("allKeys", data);
     try {
         const jsonData = await AsyncStorage.getItem(id);
         if (jsonData !== null) {
@@ -110,9 +110,9 @@ export const getStoredData = async (setPerennialData: (items: Dictionary<Perenni
     }
 }
 
-export const getAllItems = async (setPerennialData: (items: TaskStats[]) => void, existingItems: TaskStats[], onlySubtasks?: boolean) => {
+export const getAllItems = async (setPerennialData: (items: TodayTask[]) => void, existingItems: TodayTask[], onlySubtasks?: boolean) => {
     let tree: Dictionary<Perennial> = {};
-    let taskList: TaskStats[] = existingItems;
+    let taskList: TodayTask[] = existingItems;
     await getStoredData((items) => tree = items);
     let stack = Object.assign([] as Perennial[], Object.values(tree));
 
@@ -120,14 +120,37 @@ export const getAllItems = async (setPerennialData: (items: TaskStats[]) => void
         const item = stack.pop();
         if (item) {
             stack = stack.concat(item.subtasks);
-            //TODO get actual historical data
             if (!onlySubtasks || item.subtasks.length == 0) {
-                taskList.push({
-                    taskId: uuid.v4().toString(),
-                    isComplete: false,
-                    numComplete: 0,
-                    ...item
-                });
+                let task = newTodayTask();
+                let multiplier = 1;
+                switch (item.frequency?.interval) {
+                    case "day":
+                        multiplier = 1;
+                        break;
+                    case "week":
+                        multiplier = 7;
+                        break;
+                    case "month":
+                        multiplier = 30;
+                        break;
+                    case "year":
+                        multiplier = 365;
+                        break;
+                }
+                const dayObjective = multiplier * item.frequency.recurrences;
+                const statsJson = await AsyncStorage.getItem("stats_" + item.id);
+                task.priority = 1;
+                if (statsJson) {
+                    const stats = JSON.parse(statsJson);
+                    if (stats.lastCompleted) {
+                        task.lastCompleted = moment(stats.lastCompleted);
+                        task.priority = task.lastCompleted.diff(moment(), 'd') / dayObjective;
+                    }
+
+                }
+                task.taskRef = item.id;
+                task.name = item.name;
+                taskList.push(task);
             }
         }
     }

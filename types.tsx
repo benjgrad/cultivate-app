@@ -39,6 +39,7 @@ export interface AnnualEvent extends Annual {
 export interface Annual extends BaseTask {
   parent: string,
   prepTime: number,
+  dueDate: moment.Moment,
   subtasks: Dictionary<Annual>
 }
 
@@ -50,12 +51,6 @@ export interface Dictionary<TValue> {
   [key: string]: TValue;
 }
 
-export interface TaskStats extends TodayTask {
-  taskId: string;
-  lastCompleted?: moment.Moment;
-  numComplete: number;
-}
-
 export interface Milestone extends BaseTask {
   isComplete?: boolean;
 }
@@ -64,16 +59,26 @@ export const newTodayTask = () => {
   let startTime = moment();
   startTime.set({ h: 12, m: 0, s: 0, millisecond: 0 });
   return {
+    id: uuid.v4().toString(),
     isComplete: false,
     startTime: startTime,
     endTime: startTime.add(1, 'h')
   } as TodayTask;
 }
 
+export type Stats = {
+  occurrences: TodayTask[],
+  lastCompleted?: moment.Moment,
+  refId: string
+}
+
 export interface TodayTask extends BaseTask {
+  taskRef: string;
   isComplete: boolean;
+  lastCompleted?: moment.Moment;
   startTime: moment.Moment;
   endTime: moment.Moment;
+  priority: number;
 }
 
 export interface Perennial extends BaseTask {
@@ -81,7 +86,7 @@ export interface Perennial extends BaseTask {
   name: string;
   parent?: string;
   subtasks: Perennial[];
-  frequency?: Frequency;
+  frequency: Frequency;
   milestones: Milestone[];
 }
 

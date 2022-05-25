@@ -63,6 +63,7 @@ export const AnnualEventItem: React.FC<AnnualEventItemProps> = (props) => {
     const subtasks = thisItem.subtasks && Object.values(thisItem.subtasks).map((subtask) => {
         return <AnnualItem
             {...subtask}
+            dueDate={props.dueDate}
             key={subtask.id}
             parent={thisItem.id}
             onPress={() => { }}
@@ -96,6 +97,7 @@ export const AnnualEventItem: React.FC<AnnualEventItemProps> = (props) => {
                 <TouchableOpacity
                     onPress={() => {
                         const newItem = newAnnual();
+                        newItem.dueDate = thisItem.startTime;
                         newItem.parent = thisItem.id;
                         annualContext.setCurrentItem(newItem, addSubtask, props.setParentAsCurrent)
                     }}

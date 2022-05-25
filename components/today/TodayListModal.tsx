@@ -3,9 +3,10 @@ import { FlatList } from "react-native";
 import { Text, TouchableOpacity, View } from "react-native";
 import * as PerennialStorage from "../perennials/PerennialStorage";
 import * as AnnualStorage from "../annuals/AnnualStorage";
-import { TodayTask, Perennial, TaskStats, newTodayTask } from "../../types";
+import { TodayTask, Perennial, newTodayTask } from "../../types";
 import { FullscreenModal } from "../common/FullscreenModal";
 import { useStyles } from "../../Styles";
+import moment from 'moment';
 import { TimePickerModal } from "./TimePickerModal";
 
 type TodayListModalProps = {
@@ -15,7 +16,7 @@ type TodayListModalProps = {
 }
 
 export const TodayListModal: React.FC<TodayListModalProps> = (props) => {
-    const [tasks, setTasks] = React.useState<TaskStats[]>([]);
+    const [tasks, setTasks] = React.useState<TodayTask[]>([]);
     const [timeModalVisible, setTimeModalVisible] = React.useState(false);
     const [currentTask, setCurrentTask] = React.useState<TodayTask>(newTodayTask());
     const styles = useStyles();
@@ -24,11 +25,13 @@ export const TodayListModal: React.FC<TodayListModalProps> = (props) => {
         props.addTask(item);
     }
     useEffect(() => {
-        let newTasks: TaskStats[] = [];
+        let newTasks: TodayTask[] = [];
         PerennialStorage.getAllItems((storedTasks) => newTasks = storedTasks, newTasks, true);
         AnnualStorage.getAllItems(setTasks, newTasks, true);
     }, [props.modalVisible]);
-
+    tasks.sort((a, b) => {
+        return a.priority > b.priority ? -1 : 1
+    });
 
     return (
         <FullscreenModal
@@ -47,13 +50,19 @@ export const TodayListModal: React.FC<TodayListModalProps> = (props) => {
                     }} />);
                 }}
             />
-            <TimePickerModal {...currentTask} modalVisible={timeModalVisible} onClose={onClose} />
+            <TimePickerModal
+                {...currentTask}
+                modalVisible={timeModalVisible}
+                onDelete={() => {
+                    setTimeModalVisible(false);
+                }}
+                onClose={onClose} />
         </FullscreenModal>);
 }
 
 type TodayItemProps = {
-    item: TaskStats, // || AnnualTaskStats
-    onClick: (item: TaskStats) => void
+    item: TodayTask, // || AnnualTaskStats
+    onClick: (item: TodayTask) => void
 }
 
 const TodayItem: React.FC<TodayItemProps> = (props) => {
@@ -62,7 +71,7 @@ const TodayItem: React.FC<TodayItemProps> = (props) => {
 
     let subtext = 'Never cultivated';
     if (item.lastCompleted) {
-        subtext = 'Last cultivation: ' + item.lastCompleted;
+        subtext = 'Last cultivated ' + item.lastCompleted.diff(moment(), 'days') + ' days ago';
     }
     return <TouchableOpacity onPress={() => onClick(item)}>
         <View style={styles.box}>

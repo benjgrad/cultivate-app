@@ -36,7 +36,6 @@ export default function PerennialScreen() {
   const saveChild = (item: Perennial, action: 'save' | 'delete') => {
     setUpdateId(uuid.v4().toString());
     let newData = Object.assign({} as Dictionary<Perennial>, perennialData);
-    console.log(action);
 
     if (action == 'save') {
       newData[item.id] = item;

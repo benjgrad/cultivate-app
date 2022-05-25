@@ -72,6 +72,7 @@ export const AnnualScreen = () => {
           renderItem={({ item }) => {
             return <AnnualEventItem
               {...item}
+              dueDate={item.startTime}
               onPress={() => { }}
               propogateChange={saveChild}
               setParentAsCurrent={() => { setModalVisible(false); }}

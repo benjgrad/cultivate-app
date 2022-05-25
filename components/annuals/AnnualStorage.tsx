@@ -1,6 +1,6 @@
 import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Annual, AnnualEvent, Dictionary, TaskStats } from "../../types";
+import { Annual, AnnualEvent, Dictionary, newTodayTask, TaskStats, TodayTask } from "../../types";
 import * as Calendar from 'expo-calendar';
 
 import uuid from "react-native-uuid";
@@ -86,26 +86,39 @@ export const getStoredItem = async (id: string, setAnnualData: ((item: Annual | 
     }
 }
 
+const formatDeserializedAnnual = (data: any) => {
+    data.dueDate = moment(data.dueDate);
+    let subtasks = {} as Dictionary<Annual>;
+    Object.keys(data.subtasks).forEach((key) => subtasks[key] = formatDeserializedAnnual(data.subtasks[key]));
+    data.subtasks = subtasks;
+    return data as Annual;
+}
+
 const formatDeserializedEvent = (data: any) => {
     data.startTime = moment(data.startTime);
     data.endTime = moment(data.endTime);
+    data.dueDate = moment(data.dueDate);
+    let subtasks = {} as Dictionary<Annual>;
+    Object.keys(data.subtasks).forEach((key) => subtasks[key] = formatDeserializedAnnual(data.subtasks[key]));
+    data.subtasks = subtasks;
     return data as AnnualEvent;
 }
 
 export const getStoredData = async (setAnnualData: (items: Dictionary<AnnualEvent>) => void, existingData?: Annual[]) => {
     const calendars = await getCalendars();
     let items: Dictionary<AnnualEvent> = {};
-    let startTime = moment();
-    startTime.set({ h: 0, m: 0 });
+    let intervalBegin = moment();
+    intervalBegin.set({ h: 0, m: 0 });
     if (!!calendars) {
         const events = await Calendar.getEventsAsync(calendars,
-            startTime
+            intervalBegin
                 .toDate(),
-            startTime.add(100, 'd').toDate());
+            intervalBegin.add(100, 'd').toDate());
         events.forEach(event => {
             const item = {
                 name: event.title,
                 id: event.instanceId ?? event.id,
+                dueDate: moment(event.startDate),
                 startTime: moment(event.startDate),
                 endTime: moment(event.endDate),
                 prepTime: 0,
@@ -130,6 +143,7 @@ export const getStoredData = async (setAnnualData: (items: Dictionary<AnnualEven
                             savedItem.startTime = items[savedItem.id].startTime;
                             savedItem.endTime = items[savedItem.id].endTime;
                         }
+                        savedItem.dueDate = savedItem.startTime;
                         items[savedItem.id] = { ...savedItem }
                     });
                 console.log("got annual data: ", items.length);
@@ -177,9 +191,9 @@ const getCalendars: () => Promise<string[] | undefined> = async () => {
 
 }
 
-export const getAllItems = async (setAnnualData: (items: TaskStats[]) => void, existingItems: TaskStats[], onlySubtasks?: boolean) => {
+export const getAllItems = async (setAnnualData: (items: TodayTask[]) => void, existingItems: TodayTask[], onlySubtasks?: boolean) => {
     let tree: Annual[] = [];
-    let taskList: TaskStats[] = existingItems;
+    let taskList: TodayTask[] = existingItems;
     await getStoredData((items) => tree = Object.values(items));
     let stack = Object.assign([] as Annual[], tree);
 
@@ -188,14 +202,23 @@ export const getAllItems = async (setAnnualData: (items: TaskStats[]) => void, e
         if (item) {
             stack = stack.concat(Object.values(item.subtasks));
             if (!onlySubtasks || (item.parent && Object.values(item.subtasks).length == 0)) {
-                taskList.push({
-                    taskId: uuid.v4().toString(),
-                    startTime: moment("12:00PM"),
-                    endTime: moment("1:00PM"),
-                    isComplete: false,
-                    numComplete: 0,
-                    ...item
-                });
+                let task = newTodayTask();
+                const statsJson = await AsyncStorage.getItem("stats_" + item.id);
+                if (statsJson) {
+                    const stats = JSON.parse(statsJson);
+                    if (stats.lastCompleted) {
+                        task.lastCompleted = moment(stats.lastCompleted);
+                    }
+                }
+                task.priority = item.prepTime / (item.dueDate.diff(moment(), 'd'));
+                task.taskRef = item.id;
+                task.name = item.name;
+                if (item.prepTime) {
+                    task.endTime = task.startTime.add(item.prepTime, 'h');
+                }
+                if (item.dueDate.diff(moment(), 'd') >= 0) {
+                    taskList.push(task);
+                }
             }
         }
     }

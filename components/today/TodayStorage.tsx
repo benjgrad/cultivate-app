@@ -1,6 +1,6 @@
 import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TodayTask } from "../../types";
+import { Annual, Dictionary, Perennial, Stats, TodayTask } from "../../types";
 
 import uuid from "react-native-uuid";
 import moment from "moment";
@@ -25,13 +25,100 @@ export const storeData = async (data: TodayTask[]) => {
     }
 };
 
+const savePerennialStats = (task: TodayTask, item: Perennial) => {
+    AsyncStorage.getItem("stats_" + task.taskRef)
+        .then((json) => {
+            let stats: Stats;
+            if (json) {
+                stats = JSON.parse(json);
+                if (stats.occurrences && stats.occurrences.length > 0) {
+                    if (task.isComplete) {
+                        stats.occurrences[stats.occurrences.length - 1] = task;
+                        stats.lastCompleted = stats.occurrences[stats.occurrences.length - 1].startTime;
+                    }
+                    else {
+                        stats.occurrences.pop();
+                        stats.lastCompleted = undefined;
+                    }
+                } else {
+                    stats = {
+                        occurrences: task.isComplete ? [task] : [],
+                        lastCompleted: task.isComplete ? task.startTime : undefined,
+                        refId: task.taskRef
+                    }
+                }
+                AsyncStorage.setItem("stats_" + task.taskRef, JSON.stringify(stats));
+            }
+            else {
+                stats = {
+                    occurrences: task.isComplete ? [task] : [],
+                    lastCompleted: task.isComplete ? task.startTime : undefined,
+                    refId: task.id
+                }
+                AsyncStorage.setItem("stats_" + task.taskRef, JSON.stringify(stats));
+            }
+        })
+        .catch((err) => console.log("Could not find perennial stats", err));
+}
+
+
+
+const saveAnnualStats = (task: TodayTask, item: Annual) => {
+    AsyncStorage.getItem("stats_" + task.taskRef)
+        .then((json) => {
+            let stats: Stats;
+            if (json) {
+                stats = JSON.parse(json);
+                if (stats.occurrences && stats.occurrences.length > 0) {
+                    if (task.isComplete) {
+                        stats.occurrences[stats.occurrences.length - 1] = task;
+                        stats.lastCompleted = stats.occurrences[stats.occurrences.length - 1].startTime;
+                    }
+                    else {
+                        stats.occurrences.pop();
+                        stats.lastCompleted = undefined;
+                    }
+                } else {
+                    stats = {
+                        occurrences: task.isComplete ? [task] : [],
+                        lastCompleted: task.isComplete ? task.startTime : undefined,
+                        refId: task.taskRef
+                    }
+                }
+                AsyncStorage.setItem("stats_" + task.taskRef, JSON.stringify(stats));
+            }
+            else {
+                stats = {
+                    occurrences: task.isComplete ? [task] : [],
+                    lastCompleted: task.isComplete ? task.startTime : undefined,
+                    refId: task.id
+                }
+                AsyncStorage.setItem("stats_" + task.taskRef, JSON.stringify(stats));
+            }
+        })
+        .catch((err) => console.log("Could not find annual stats", err));
+}
 
 export const storeItem = async (data: TodayTask) => {
     try {
+        //save the todayTask
         await AsyncStorage.setItem(
             data.id,
             JSON.stringify(data)
         );
+        //TODO save the historical data
+        const json = await AsyncStorage.getItem(
+            data.taskRef
+        );
+        if (json) {
+            const item = JSON.parse(json);
+            if (item && item.frequency) {
+                savePerennialStats(data, item);
+            }
+            else {
+                saveAnnualStats(data, item);
+            }
+        }
     } catch (error) {
         // Error saving data
         console.log(error);
@@ -90,11 +177,11 @@ export const getStoredData = async (setTodayTaskData: (items: TodayTask[]) => vo
                 existingData = [];
             }
             const newData = [...JSON.parse(jsonData), ...existingData]
-            console.log(newData.map(item => {
+            newData.map(item => {
                 item.startTime = moment(item.startTime);
                 item.endTime = moment(item.endTime);
                 return item;
-            }))
+            })
             setTodayTaskData(newData);
             console.log("got data: ", newData.length);
         }

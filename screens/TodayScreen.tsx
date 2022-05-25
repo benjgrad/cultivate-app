@@ -1,7 +1,7 @@
 import * as React from 'react';
 import MainLayout from '../components/MainLayout';
 
-import { Dictionary, TodayTask } from '../types'
+import { Dictionary, newTodayTask, TodayTask } from '../types'
 
 import { FlatList } from 'react-native';
 import moment from 'moment';
@@ -18,24 +18,23 @@ const TodayScreen: React.FC = () => {
     const [modalVisible, setModalVisible] = React.useState<boolean>(false);
     const [timeModalVisible, setTimeModalVisible] = React.useState(false);
     const [todayItems, setTodayItems] = React.useState<TodayTask[]>([]);
-    const [currenItem, setCurrentItem] = React.useState<TodayTask>();
+    const [currenItem, setCurrentItem] = React.useState<TodayTask>(newTodayTask());
     React.useEffect(() => { TodayStorage.getStoredData(setTodayItems) }, []);
 
     const styles = useStyles();
 
     const handleComplete = (id: string) => {
-        // TODO set Lastcomplete stats
-        // Save to local storage
         let i = 0;
         const found = todayItems?.find((elem: TodayTask, iter: number) => {
             i = iter;
             return id == elem.id;
         });
-        if (!!found) {
+        if (found) {
             const todayItem = { ...todayItems[i], isComplete: !todayItems[i].isComplete };
             let newData = todayItems.slice();
             newData.splice(i, 1, todayItem);
             setTodayItems(newData);
+            TodayStorage.storeItem(todayItem);
             TodayStorage.storeData(newData);
         }
     }
@@ -49,9 +48,7 @@ const TodayScreen: React.FC = () => {
         let newData = Object.assign([], todayItems) as TodayTask[];
         if (!!found) {
             if (action == 'delete') {
-                console.log(newData.length);
                 newData.splice(i, 1);
-                console.log(newData.length);
             } else {
                 newData.splice(i, 1, item)
             }
