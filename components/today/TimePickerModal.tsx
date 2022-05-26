@@ -18,11 +18,44 @@ export const TimePickerModal: React.FC<TimePickerModalProps> = (props) => {
     const [startTime, setStartTime] = React.useState<moment.Moment>(moment());
     const [endTime, setEndTime] = React.useState<moment.Moment>(moment());
     const [name, setName] = React.useState(props.name);
-    React.useEffect(() => { setName(props.name) }, [props.id]);
+
+    React.useEffect(() => {
+        setName(props.name);
+        let diff = props.endTime.diff(props.startTime, 'minute');
+        if (diff < 30) {
+            diff = 60;
+            const newEndTime = props.startTime.clone().add(diff, 'minute');
+            setEndTime(newEndTime)
+        }
+        else {
+            setEndTime(props.endTime);
+        }
+        setStartTime(props.startTime);
+    }, [props.id]);
+
+    const updateStartTime = (newTime: moment.Moment) => {
+        let diff = endTime.diff(startTime, 'minute');
+        if (diff < 30) {
+            diff = 60;
+        }
+        const newEndTime = newTime.clone().add(diff, 'minute');
+        setEndTime(newEndTime)
+        setStartTime(newTime);
+    }
+
+
+    const updateEndTime = (newEndTime: moment.Moment) => {
+        let diff = newEndTime.diff(startTime, 'minute');
+        if (diff < 30) {
+            diff = 60;
+            setStartTime(newEndTime.clone().subtract(diff, 'minute'))
+        }
+        setEndTime(newEndTime);
+    }
 
     const mode: any = 'time'
 
-    const onChange = (setter: React.Dispatch<React.SetStateAction<moment.Moment>>) => (_: any, selectedDate: Date | undefined) => {
+    const onChange = (setter: ((item: moment.Moment) => void)) => (_: any, selectedDate: Date | undefined) => {
         if (selectedDate) {
             setter(moment(selectedDate));
         }
@@ -64,25 +97,24 @@ export const TimePickerModal: React.FC<TimePickerModalProps> = (props) => {
                 <View style={styles.timePickerContainer}>
                     <DateTimePicker
                         style={styles.timePicker}
-                        minuteInterval={10}
+                        minuteInterval={30}
                         display="compact"
                         testID="dateTimePicker"
                         value={startTime.toDate()}
                         mode={mode}
-                        onChange={onChange(setStartTime)}
+                        onChange={onChange(updateStartTime)}
                     />
                 </View>
                 <Text style={styles.dash}>-</Text>
                 <View style={styles.timePickerContainer}>
                     <DateTimePicker
                         style={styles.timePicker}
-                        minimumDate={startTime.toDate()}
-                        minuteInterval={10}
+                        minuteInterval={30}
                         display="compact"
                         testID="dateTimePicker"
                         value={endTime.toDate()}
                         mode={mode}
-                        onChange={onChange(setEndTime)}
+                        onChange={onChange(updateEndTime)}
                     />
                 </View>
             </View>

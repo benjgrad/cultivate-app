@@ -67,7 +67,12 @@ export const AnnualScreen = () => {
 
         <FlatList
           style={styles.modalScrollview}
-          data={Object.values(calendarEvents)}
+          data={Object.values(calendarEvents).sort((a, b) => {
+            if (a.startTime.isSame(b.startTime)) {
+              return a.endTime.isAfter(b.endTime) ? 1 : -1;
+            }
+            return a.startTime.isAfter(b.startTime) ? 1 : -1;
+          })}
           keyExtractor={(cal: Annual | AnnualEvent) => cal.id}
           renderItem={({ item }) => {
             return <AnnualEventItem
