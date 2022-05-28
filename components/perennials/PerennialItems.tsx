@@ -4,7 +4,7 @@ import uuid from "react-native-uuid";
 import { Text, View } from "../Themed";
 import { BaseTask, Frequency, Milestone, Perennial, PerennialSaveFn } from "../../types";
 import { Ionicons } from "@expo/vector-icons";
-import { MileStoneItem } from "./MilestoneProps";
+import { MileStoneItem } from "./MilestoneItem";
 import { PerennialContext } from "../PerennialContext";
 import { removeItem, storeItem } from "./PerennialStorage";
 import { checkBoxHeight, useStyles } from "../../Styles";

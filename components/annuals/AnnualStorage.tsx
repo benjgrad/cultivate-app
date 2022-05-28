@@ -1,6 +1,6 @@
 import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Annual, AnnualEvent, Dictionary, newTodayTask, TaskStats, TodayTask } from "../../types";
+import { Annual, AnnualEvent, Dictionary, newTodayTask, TodayTask } from "../../types";
 import * as Calendar from 'expo-calendar';
 
 import uuid from "react-native-uuid";
@@ -105,12 +105,12 @@ const formatDeserializedEvent = (data: any) => {
 }
 
 export const getStoredData = async (setAnnualData: (items: Dictionary<AnnualEvent>) => void, existingData?: Annual[]) => {
-    const calendars = await getCalendars();
+    const calendars = await getCalendars(true);
     let items: Dictionary<AnnualEvent> = {};
     let intervalBegin = moment();
     intervalBegin.set({ h: 0, m: 0 });
-    if (!!calendars) {
-        const events = await Calendar.getEventsAsync(calendars,
+    if (calendars && calendars.length > 0) {
+        const events = await Calendar.getEventsAsync(calendars.map(cal => cal.id),
             intervalBegin
                 .toDate(),
             intervalBegin.add(100, 'd').toDate());
@@ -142,9 +142,9 @@ export const getStoredData = async (setAnnualData: (items: Dictionary<AnnualEven
                         if (items[savedItem.id]) {
                             savedItem.startTime = items[savedItem.id].startTime;
                             savedItem.endTime = items[savedItem.id].endTime;
+                            savedItem.dueDate = savedItem.startTime;
+                            items[savedItem.id] = { ...savedItem }
                         }
-                        savedItem.dueDate = savedItem.startTime;
-                        items[savedItem.id] = { ...savedItem }
                     });
                 console.log("got annual data: ", items.length);
 
@@ -165,30 +165,60 @@ export const getStoredData = async (setAnnualData: (items: Dictionary<AnnualEven
         }
 
     }
+    else {
+        setAnnualData({});
+    }
 
 }
 
-const getCalendars: () => Promise<string[] | undefined> = async () => {
+export const getCalendars: (onlyVisible?: boolean) => Promise<Calendar.Calendar[]> = async (onlyVisible: boolean = false) => {
     const { status } = await Calendar.requestCalendarPermissionsAsync();
     if (status === 'granted') {
         let calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
         const jsonData = await AsyncStorage.getItem('calendars');
 
         if (!jsonData) {
-            return calendars.map(cal => cal.id);
+            return calendars.map(cal => {
+                cal.isVisible = true;
+                return cal;
+            });
         }
 
         const displayCalendars = JSON.parse(jsonData);
-        calendars = calendars.filter((value, index, array) => {
-            return displayCalendars[value.id];
+        calendars = calendars.map((value) => {
+            value.isVisible = displayCalendars[value.id].isVisible;
+            return value;
         })
-        if (!calendars) {
-            return [];
+
+        if (onlyVisible) {
+            return calendars.filter(calendar => calendar.isVisible);
         }
-        return calendars.map(cal => cal.id);;
-
+        else {
+            return calendars;
+        }
     }
+    return [];
+}
 
+
+export const saveSelectedCalendars = async (data: Dictionary<Calendar.Calendar>) => {
+    try {
+        await AsyncStorage.setItem(
+            'calendars',
+            JSON.stringify(data)
+        );
+        console.log('saved data');
+    } catch (error) {
+        // Error saving data
+        console.log(error);
+        Alert.alert(
+            "Error",
+            "We had trouble saving your selected calendars. Please try again.",
+            [
+                { text: "OK", onPress: () => console.log("OK Pressed") }
+            ]
+        );
+    }
 }
 
 export const getAllItems = async (setAnnualData: (items: TodayTask[]) => void, existingItems: TodayTask[], onlySubtasks?: boolean) => {

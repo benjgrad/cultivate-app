@@ -1,23 +1,21 @@
 import * as React from 'react';
 import MainLayout from '../components/MainLayout';
 
-import * as Calendar from 'expo-calendar';
-import moment from 'moment';
 import uuid from "react-native-uuid";
-import { FlatList } from 'react-native';
+import { FlatList, GestureResponderEvent, TouchableOpacity } from 'react-native';
 import { useStyles } from '../Styles';
-import { AnnualItem } from '../components/annuals/AnnualItem';
 import { Annual, AnnualEvent, AnnualSaveFn, Dictionary, newAnnual } from '../types';
 import { AnnualContext } from '../components/annuals/AnnualContext';
 import AddAnnualModal from '../components/annuals/AddAnnualModal';
 import { getStoredData, removeItem, storeData, storeItem } from '../components/annuals/AnnualStorage';
 import { AnnualEventItem } from '../components/annuals/AnnualEventItem';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import ChooseCalendarModal from '../components/annuals/ChooseCalendarModal';
 
 export const AnnualScreen = () => {
   const styles = useStyles();
   const [calendarEvents, setCalendarEvents] = React.useState<Dictionary<AnnualEvent>>({});
   const [modalVisible, setModalVisible] = React.useState<boolean>(false);
+  const [calendarModalVisible, setCalendarModalVisible] = React.useState<boolean>(false);
   const [currentItem, setCurrentItem] = React.useState<Annual | AnnualEvent>(newAnnual());
   const [saveCurrentItem, setSaveCurrentItem] = React.useState<AnnualSaveFn<Annual | AnnualEvent>>((item: Annual) => { });
   const [openParentAction, setOpenParentAction] = React.useState<() => void>(() => { });
@@ -35,7 +33,7 @@ export const AnnualScreen = () => {
   };
 
 
-  React.useEffect(() => { getStoredData(setCalendarEvents); }, [updateId]);
+  React.useEffect(() => { getStoredData(setCalendarEvents); }, [updateId, calendarModalVisible]);
 
   const saveChild = (item: AnnualEvent, action: 'save' | 'delete') => {
     setUpdateId(uuid.v4().toString());
@@ -53,8 +51,14 @@ export const AnnualScreen = () => {
     setModalVisible(false);
   };
 
+  const titlePressAction = (event: GestureResponderEvent) => {
+    setCalendarModalVisible(true);
+  }
+
   return (
-    <MainLayout title="Annuals" //addAction={async () => await AsyncStorage.clear()}
+    <MainLayout
+      title="Annuals"
+      titlePressAction={titlePressAction} //addAction={async () => await AsyncStorage.clear()}
     >
       <AnnualContext.Provider
         value={{
@@ -85,6 +89,7 @@ export const AnnualScreen = () => {
             />
           }} />
         <AddAnnualModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
+        <ChooseCalendarModal modalVisible={calendarModalVisible} setModalVisible={setCalendarModalVisible} />
       </AnnualContext.Provider>
     </MainLayout >
   );
