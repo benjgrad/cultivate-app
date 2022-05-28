@@ -38,7 +38,7 @@ const savePerennialStats = (task: TodayTask, item: Perennial) => {
                     }
                     else {
                         stats.occurrences.pop();
-                        stats.lastCompleted = undefined;
+                        stats.lastCompleted = stats.occurrences.length > 0 ? stats.occurrences[stats.occurrences.length - 1].startTime : undefined;
                     }
                 } else {
                     stats = {

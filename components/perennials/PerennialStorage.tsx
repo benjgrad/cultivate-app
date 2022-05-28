@@ -144,7 +144,7 @@ export const getAllItems = async (setPerennialData: (items: TodayTask[]) => void
                     const stats = JSON.parse(statsJson);
                     if (stats.lastCompleted) {
                         task.lastCompleted = moment(stats.lastCompleted);
-                        task.priority = task.lastCompleted.diff(moment(), 'd') / dayObjective;
+                        task.priority = moment().diff(task.lastCompleted, 'd') / dayObjective;
                     }
 
                 }
