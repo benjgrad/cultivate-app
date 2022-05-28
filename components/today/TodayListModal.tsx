@@ -71,7 +71,7 @@ const TodayItem: React.FC<TodayItemProps> = (props) => {
 
     let subtext = 'Never cultivated';
     if (item.lastCompleted) {
-        subtext = 'Last cultivated ' + item.lastCompleted.diff(moment(), 'days') + ' days ago';
+        subtext = 'Last cultivated ' + moment().diff(item.lastCompleted, 'days') + ' days ago';
     }
     return <TouchableOpacity onPress={() => onClick(item)}>
         <View style={styles.box}>
