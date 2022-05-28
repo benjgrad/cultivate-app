@@ -31,9 +31,10 @@ const savePerennialStats = (task: TodayTask, item: Perennial) => {
             let stats: Stats;
             if (json) {
                 stats = JSON.parse(json);
+                console.log(stats.occurrences.length)
                 if (stats.occurrences && stats.occurrences.length > 0) {
                     if (task.isComplete) {
-                        stats.occurrences[stats.occurrences.length - 1] = task;
+                        stats.occurrences.push(task);
                         stats.lastCompleted = stats.occurrences[stats.occurrences.length - 1].startTime;
                     }
                     else {
