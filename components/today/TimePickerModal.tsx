@@ -9,15 +9,16 @@ import { Text } from "../Themed"
 interface TimePickerModalProps extends TodayTask {
     modalVisible: boolean,
     onClose: (item: TodayTask) => void,
-    onDelete: (item: TodayTask) => void
+    onDelete: (item: TodayTask) => void,
+    currentDate: moment.Moment;
 }
 
 
 export const TimePickerModal: React.FC<TimePickerModalProps> = (props) => {
     const styles = useStyles();
 
-    const [startTime, setStartTime] = React.useState<moment.Moment>(moment());
-    const [endTime, setEndTime] = React.useState<moment.Moment>(moment());
+    const [startTime, setStartTime] = React.useState<moment.Moment>(props.currentDate);
+    const [endTime, setEndTime] = React.useState<moment.Moment>(props.currentDate);
     const [name, setName] = React.useState(props.name);
 
     React.useEffect(() => {
@@ -76,6 +77,12 @@ export const TimePickerModal: React.FC<TimePickerModalProps> = (props) => {
                 <TouchableOpacity
                     style={styles.modalDone}
                     onPress={() => {
+                        startTime.set("D", props.currentDate.dayOfYear());
+                        startTime.set("M", props.currentDate.month());
+                        startTime.set("y", props.currentDate.year());
+                        endTime.set("D", props.currentDate.dayOfYear());
+                        endTime.set("M", props.currentDate.month());
+                        endTime.set("y", props.currentDate.year());
                         props.onClose({
                             ...props,
                             name: name ? name : props.name,

@@ -122,12 +122,14 @@ const TodayScreen: React.FC = () => {
                         }} />}
                 keyExtractor={(item: TodayTask) => item.id} />
             <TodayListModal
+                currentDate={currentDate}
                 modalVisible={modalVisible}
                 toggleModalVisible={() => setModalVisible(!modalVisible)}
                 addTask={saveTask}
             />
             <TimePickerModal
                 {...currenItem}
+                currentDate={currentDate}
                 modalVisible={timeModalVisible}
                 onClose={(item) => {
                     setTimeModalVisible(false);

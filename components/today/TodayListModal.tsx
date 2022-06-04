@@ -14,6 +14,7 @@ type TodayListModalProps = {
     modalVisible: boolean,
     toggleModalVisible: () => void,
     addTask: (item: TodayTask, action?: 'save' | 'delete') => void,
+    currentDate: moment.Moment;
 }
 
 export const TodayListModal: React.FC<TodayListModalProps> = (props) => {
@@ -53,6 +54,7 @@ export const TodayListModal: React.FC<TodayListModalProps> = (props) => {
             />
             <TimePickerModal
                 {...currentTask}
+                currentDate={props.currentDate}
                 modalVisible={timeModalVisible}
                 onDelete={() => {
                     setTimeModalVisible(false);

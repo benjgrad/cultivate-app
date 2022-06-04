@@ -19,7 +19,7 @@ export function useStyles(): any {
     const styles = StyleSheet.create({
         main: {
             flex: 1,
-            backgroundColor: Colors[colorScheme].background,
+            backgroundColor: Colors[colorScheme].primary.normal,
         },
         centerItems: {
             alignItems: 'center',
@@ -48,9 +48,10 @@ export function useStyles(): any {
             height: 80,
             justifyContent: 'center', //Centered vertically
             alignItems: 'center', // Centered horizontally
-            backgroundColor: Colors[colorScheme].background,
+            backgroundColor: Colors[colorScheme].primary.normal,
         },
         title: {
+            color: Colors[colorScheme].primary.text,
             marginHorizontal: 10,
             fontSize: 40,
             fontWeight: 'bold',
@@ -58,6 +59,7 @@ export function useStyles(): any {
             flex: 85,
         },
         todayTitle: {
+            color: Colors[colorScheme].primary.text,
             fontSize: 40,
             width: screenWidth - 110,
             fontWeight: 'bold',
@@ -74,11 +76,11 @@ export function useStyles(): any {
         content: {
             paddingHorizontal: 16,
             flex: 1,
-            backgroundColor: Colors[colorScheme].background,
+            backgroundColor: Colors[colorScheme].primary.normal,
         },
         addIcon: {
             size: 50,
-            color: Colors[colorScheme].text
+            color: Colors[colorScheme].primary.text
         },
         addAction: {
             flex: 15,
@@ -87,17 +89,17 @@ export function useStyles(): any {
         },
         scrollView: {},
         subtasks: {
-            backgroundColor: Colors[colorScheme].background,
+            backgroundColor: Colors[colorScheme].primary.normal,
             marginLeft: 20,
         },
         textContainer: {
-            backgroundColor: Colors[colorScheme].secondaryColor,
+            backgroundColor: Colors[colorScheme].secondary.normal,
             marginHorizontal: 24,
             justifyContent: "center",
             flex: 1,
         },
         box: {
-            backgroundColor: Colors[colorScheme].secondaryColor,
+            backgroundColor: Colors[colorScheme].secondary.normal,
             height: itemHeight,
             margin: 5,
             alignSelf: "stretch",
@@ -112,8 +114,8 @@ export function useStyles(): any {
             flexDirection: "row",
         },
         milestoneEditorText: {
-            color: Colors[colorScheme].text,
-            backgroundColor: Colors[colorScheme].modal,
+            color: Colors[colorScheme].primary.text,
+            backgroundColor: Colors[colorScheme].primary.light,
             paddingRight: 10,
             fontSize: 20,
             height: itemHeight,
@@ -122,11 +124,11 @@ export function useStyles(): any {
         },
         addMilestoneIcon: {
             size: 24,
-            color: Colors[colorScheme].text,
+            color: Colors[colorScheme].primary.text,
         },
         deleteMilestoneIcon: {
             size: deleteItemHeight,
-            color: Colors[colorScheme].text,
+            color: Colors[colorScheme].primary.text,
         },
         name: {
             fontSize: 20,
@@ -144,7 +146,7 @@ export function useStyles(): any {
             top: (itemHeight - deleteItemHeight) / 2,
         },
         addSubtaskIcon: {
-            color: Colors[colorScheme].text,
+            color: Colors[colorScheme].secondary.text,
             size: checkBoxHeight,
             width: checkBoxHeight,
             height: checkBoxHeight,
@@ -155,7 +157,7 @@ export function useStyles(): any {
         modalView: {
             marginTop: 60,
             height: screenHeight - modalTop,
-            backgroundColor: Colors[colorScheme].modal,
+            backgroundColor: Colors[colorScheme].primary.light,
             borderRadius: 20,
             paddingHorizontal: 35,
             paddingTop: 15,
@@ -172,7 +174,7 @@ export function useStyles(): any {
         timeModal: {
             marginTop: '10%',
             height: '40%',
-            backgroundColor: Colors[colorScheme].modal,
+            backgroundColor: Colors[colorScheme].primary.light,
             borderRadius: 20,
             paddingHorizontal: 35,
             paddingTop: 15,
@@ -205,7 +207,8 @@ export function useStyles(): any {
             marginRight: -15
         },
         modalDoneText: {
-            fontSize: 18
+            fontSize: 18,
+            color: Colors[colorScheme].primary.text
         },
         modalBack: {
             flex: 85,
@@ -220,10 +223,10 @@ export function useStyles(): any {
             textAlign: 'center'
         },
         pickerItems: {
-            color: Colors[colorScheme].text
+            color: Colors[colorScheme].primary.text
         },
         modalBackIcon: {
-            color: Colors[colorScheme].text,
+            color: Colors[colorScheme].primary.text,
             size: 30,
             marginVertical: -7.5
         },
@@ -239,8 +242,8 @@ export function useStyles(): any {
             flex: 1,
         },
         inputRow: {
-            color: Colors[colorScheme].text,
-            backgroundColor: Colors[colorScheme].secondaryColor,
+            color: Colors[colorScheme].primary.text,
+            backgroundColor: Colors[colorScheme].primary.normal,
             textAlign: 'center',
             height: 50,
             borderWidth: 1,

@@ -15,7 +15,6 @@ type MainLayoutProps = {
 }
 const MainLayout: React.FC<MainLayoutProps> = (props) => {
     const styles = useStyles();
-    const colorScheme = useColorScheme();
     return (
         <SafeAreaView style={styles.main}>
             <View style={styles.container}>
