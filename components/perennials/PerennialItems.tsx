@@ -1,7 +1,7 @@
 import * as React from "react";
 import { TouchableOpacity } from "react-native";
 import uuid from "react-native-uuid";
-import { Text, View } from "../Themed";
+import { Icon, Text, View } from "../Themed";
 import { BaseTask, Frequency, Milestone, Perennial, PerennialSaveFn } from "../../types";
 import { Ionicons } from "@expo/vector-icons";
 import { MileStoneItem } from "./MilestoneItem";
@@ -125,7 +125,7 @@ export const PerennialItem: React.FC<PerennialItemProps> = React.memo((props) =>
                         perennialContext.setCurrentItem(newItem, addSubtask, setThisToCurrent);
                     }}
                 >
-                    <Ionicons color={Colors[colorScheme].text} style={styles.addSubtask} size={checkBoxHeight} name="add" />
+                    <Icon style={styles.addSubtaskIcon} name="add" />
                 </TouchableOpacity>
             </View>
             <View style={styles.subtasks}>

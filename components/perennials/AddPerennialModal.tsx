@@ -1,5 +1,5 @@
 import * as React from "react";
-import { KeyboardAvoidingView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { KeyboardAvoidingView, TextInput, TouchableOpacity, View } from "react-native";
 import { Milestone, Perennial, Frequency } from "../../types";
 import { FrequencyPicker } from "./FrequencyPicker";
 import { FullscreenModal } from "../common/FullscreenModal";
@@ -7,6 +7,7 @@ import { PerennialContext } from "../PerennialContext";
 import { getStoredItem } from "./PerennialStorage";
 import { useStyles } from "../../Styles";
 import { MilestoneEditor } from "./MilestoneEditor";
+import { Text } from "../Themed"
 
 type ModalProps = {
   modalVisible: boolean,

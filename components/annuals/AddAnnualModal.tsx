@@ -1,6 +1,7 @@
 import * as React from "react";
-import { KeyboardAvoidingView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { KeyboardAvoidingView, TextInput, TouchableOpacity, View } from "react-native";
 import { Milestone, Annual, Frequency, AnnualEvent } from "../../types";
+import { Text } from "../Themed";
 
 import { FullscreenModal } from "../common/FullscreenModal";
 import { AnnualContext } from "./AnnualContext";

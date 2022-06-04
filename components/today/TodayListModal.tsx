@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { FlatList } from "react-native";
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import * as PerennialStorage from "../perennials/PerennialStorage";
 import * as AnnualStorage from "../annuals/AnnualStorage";
 import { TodayTask, Perennial, newTodayTask } from "../../types";
@@ -8,6 +8,7 @@ import { FullscreenModal } from "../common/FullscreenModal";
 import { useStyles } from "../../Styles";
 import moment from 'moment';
 import { TimePickerModal } from "./TimePickerModal";
+import { Text } from "../Themed"
 
 type TodayListModalProps = {
     modalVisible: boolean,

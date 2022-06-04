@@ -41,7 +41,6 @@ export function useStyles(): any {
             flexDirection: "row",
             justifyContent: 'center', //Centered vertically
             alignItems: 'center', // Centered horizontally
-            backgroundColor: Colors[colorScheme].background,
         },
         container: {
             marginHorizontal: 24,
@@ -77,11 +76,14 @@ export function useStyles(): any {
             flex: 1,
             backgroundColor: Colors[colorScheme].background,
         },
+        addIcon: {
+            size: 50,
+            color: Colors[colorScheme].text
+        },
         addAction: {
             flex: 15,
             right: 0,
             position: 'absolute',
-            borderColor: 'red',
         },
         scrollView: {},
         subtasks: {
@@ -104,10 +106,27 @@ export function useStyles(): any {
         },
         milestoneItemContainer: {
             height: itemHeight,
-            margin: 5,
+            marginVertical: 5,
             alignSelf: "stretch",
             borderRadius: 15,
             flexDirection: "row",
+        },
+        milestoneEditorText: {
+            color: Colors[colorScheme].text,
+            backgroundColor: Colors[colorScheme].modal,
+            paddingRight: 10,
+            fontSize: 20,
+            height: itemHeight,
+            alignSelf: "stretch",
+            flexDirection: "row",
+        },
+        addMilestoneIcon: {
+            size: 24,
+            color: Colors[colorScheme].text,
+        },
+        deleteMilestoneIcon: {
+            size: deleteItemHeight,
+            color: Colors[colorScheme].text,
         },
         name: {
             fontSize: 20,
@@ -124,7 +143,9 @@ export function useStyles(): any {
             right: 5,
             top: (itemHeight - deleteItemHeight) / 2,
         },
-        addSubtask: {
+        addSubtaskIcon: {
+            color: Colors[colorScheme].text,
+            size: checkBoxHeight,
             width: checkBoxHeight,
             height: checkBoxHeight,
             position: "absolute",
@@ -134,7 +155,7 @@ export function useStyles(): any {
         modalView: {
             marginTop: 60,
             height: screenHeight - modalTop,
-            backgroundColor: Colors[colorScheme].background,
+            backgroundColor: Colors[colorScheme].modal,
             borderRadius: 20,
             paddingHorizontal: 35,
             paddingTop: 15,
@@ -151,7 +172,7 @@ export function useStyles(): any {
         timeModal: {
             marginTop: '10%',
             height: '40%',
-            backgroundColor: "white",
+            backgroundColor: Colors[colorScheme].modal,
             borderRadius: 20,
             paddingHorizontal: 35,
             paddingTop: 15,
@@ -184,32 +205,42 @@ export function useStyles(): any {
             marginRight: -15
         },
         modalDoneText: {
-            color: "#000000",
-            fontSize: 16
+            fontSize: 18
         },
         modalBack: {
-            backgroundColor: 'red',
             flex: 85,
+            flexDirection: 'row',
             marginLeft: -15,
         },
 
         freqPickerTxt: {
+            alignItems: 'center',
             top: 10,
             fontSize: 20,
             textAlign: 'center'
+        },
+        pickerItems: {
+            color: Colors[colorScheme].text
+        },
+        modalBackIcon: {
+            color: Colors[colorScheme].text,
+            size: 30,
+            marginVertical: -7.5
         },
         picker: {
             height: 50,
             flex: 1
         },
         frequencyMsg: {
+            textAlign: 'center',
             height: 50,
             fontSize: 20,
             top: 10,
             flex: 1,
-            justifyContent: 'center',
         },
         inputRow: {
+            color: Colors[colorScheme].text,
+            backgroundColor: Colors[colorScheme].secondaryColor,
             textAlign: 'center',
             height: 50,
             borderWidth: 1,
@@ -225,6 +256,7 @@ export function useStyles(): any {
         checkBox: {
             width: checkBoxHeight,
             height: checkBoxHeight,
+            backgroundColor: 'white',
             borderRadius: 20,
             borderColor: 'black',
             borderWidth: 3,

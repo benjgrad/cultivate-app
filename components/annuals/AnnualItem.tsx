@@ -1,10 +1,11 @@
 import { Ionicons } from '@expo/vector-icons'
 import * as React from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity } from 'react-native'
 import { checkBoxHeight, useStyles } from '../../Styles'
 import { Annual, AnnualEvent, AnnualSaveFn, newAnnual } from '../../types'
 import { AnnualContext } from './AnnualContext'
 import { removeItem, storeItem } from './AnnualStorage'
+import { Icon, Text } from '../Themed'
 
 interface AnnualItemProps extends Annual {
     onPress: () => void,
@@ -80,7 +81,7 @@ export const AnnualItem: React.FC<AnnualItemProps> = (props) => {
                         annualContext.setCurrentItem(newItem, addSubtask, props.setParentAsCurrent)
                     }}
                 >
-                    <Ionicons style={styles.addSubtask} size={checkBoxHeight} name="add" />
+                    <Icon style={styles.addSubtaskIcon} name="add" />
                 </TouchableOpacity>
             </View>
         </TouchableOpacity>
@@ -88,5 +89,4 @@ export const AnnualItem: React.FC<AnnualItemProps> = (props) => {
             {subtasks}
         </View>
     </>
-
 }

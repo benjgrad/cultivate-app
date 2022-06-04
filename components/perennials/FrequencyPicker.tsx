@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { Text, View, TouchableOpacity, TextInput } from 'react-native';
+import { View, TouchableOpacity, TextInput } from 'react-native';
 import { Picker } from '@react-native-picker/picker'
 import { useStyles } from '../../Styles';
 import { Frequency } from '../../types';
 import { FullscreenModal } from '../common/FullscreenModal';
+import { Text } from "../Themed"
 
 type FrequencyPickerProps = {
     frequency: Frequency;
@@ -51,10 +52,11 @@ export const FrequencyPicker: React.FC<FrequencyPickerProps> = (props) => {
                 //https://github.com/mxck/react-native-material-menu
                 //https://github.com/peacechen/react-native-modal-selector
                 selectedValue={inter}
+                itemStyle={styles.pickerItems}
                 style={styles.picker}
                 onValueChange={(itemValue) => setInterval(itemValue)}
             >
-                <Picker.Item label="day" value="day" />
+                <Picker.Item color={styles.pickerItems.color} label="day" value="day" />
                 <Picker.Item label="weeks" value="week" />
                 <Picker.Item label="month" value="month" />
                 <Picker.Item label="year" value="year" />

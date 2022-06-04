@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Modal, View, Text, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { Modal, View, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { ScrollView } from 'react-native';
 import { useStyles } from '../../Styles';
+import { Icon, Text } from "../Themed"
 
 
 type FullscreenModalProps = {
@@ -29,7 +30,8 @@ export const FullscreenModal: React.FC<FullscreenModalProps> = (props) => {
             <View style={styles.topNav}>
                 <TouchableOpacity onPress={backBtn}
                     style={styles.modalBack}>
-                    <Text style={styles.modalDoneText}>{props.backBtn && "<" + backMsg}</Text>
+                    <Icon style={styles.modalBackIcon} name="chevron-back-outline" />
+                    <Text style={styles.modalDoneText}>{props.backBtn && backMsg}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.modalDone}

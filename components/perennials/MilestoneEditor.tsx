@@ -5,6 +5,7 @@ import { TextInput, TouchableOpacity } from 'react-native';
 import { deleteItemHeight, useStyles } from '../../Styles';
 import { Milestone as Milestone } from '../../types'
 import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '../Themed';
 
 type MilestoneEditorProps = {
     milestones: Milestone[];
@@ -52,7 +53,7 @@ export const MilestoneEditor: React.FC<MilestoneEditorProps> = (props) => {
             {milestones}
         </View>
         <TouchableOpacity style={styles.centerItems} onPress={addMilestone}>
-            <Ionicons size={24} name="add" />
+            <Icon style={styles.addMilestoneIcon} name="add" />
         </TouchableOpacity>
     </>);
 }
@@ -68,7 +69,7 @@ const MilestoneEntry: React.FC<MilestoneEntryProps> = (props) => {
     return (<View style={styles.milestoneItemContainer} key={props.id}>
         <View style={styles.textContainer}>
             <TextInput
-                style={styles.milstoneItem}
+                style={styles.milestoneEditorText}
                 value={props.name}
                 placeholder="Milestone"
                 onChangeText={(val: string) => props.onChange({ ...props, name: val })}
@@ -76,7 +77,7 @@ const MilestoneEntry: React.FC<MilestoneEntryProps> = (props) => {
         </View>
         <View style={styles.modalDelete}>
             <TouchableOpacity onPress={() => props.onChange(props, 'delete')}>
-                <Ionicons size={deleteItemHeight} name="close" />
+                <Icon style={styles.deleteMilestoneIcon} name="close" />
             </TouchableOpacity>
         </View>
     </View>);

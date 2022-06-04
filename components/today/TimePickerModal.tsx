@@ -1,9 +1,10 @@
 import * as React from 'react'
-import { Button, Modal, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { Button, Modal, TextInput, TouchableOpacity, View } from "react-native"
 import { useStyles } from '../../Styles'
 import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { TodayTask } from '../../types';
+import { Text } from "../Themed"
 
 interface TimePickerModalProps extends TodayTask {
     modalVisible: boolean,
