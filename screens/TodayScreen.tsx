@@ -3,7 +3,7 @@ import MainLayout from '../components/MainLayout';
 
 import { Dictionary, newTodayTask, TodayTask } from '../types'
 
-import { FlatList } from 'react-native';
+import { Dimensions, FlatList, InteractionManager, NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import moment from 'moment';
 import uuid from 'react-native-uuid';
 import * as TodayStorage from "../components/today/TodayStorage";
@@ -12,6 +12,8 @@ import { TodayItem } from '../components/today/TodayItem';
 import { useStyles } from '../Styles';
 import { TodayListModal } from '../components/today/TodayListModal';
 import { TimePickerModal } from '../components/today/TimePickerModal';
+import Animated from 'react-native-reanimated';
+import { Text, View } from '../components/Themed';
 
 
 const TodayScreen: React.FC = () => {
@@ -19,9 +21,20 @@ const TodayScreen: React.FC = () => {
     const [timeModalVisible, setTimeModalVisible] = React.useState(false);
     const [todayItems, setTodayItems] = React.useState<TodayTask[]>([]);
     const [currenItem, setCurrentItem] = React.useState<TodayTask>(newTodayTask());
-    React.useEffect(() => { TodayStorage.getStoredData(setTodayItems) }, []);
+    const [currentDate, setCurrentDate] = React.useState<moment.Moment>(moment());
+    const [dateList, setDateList] = React.useState<Dictionary<moment.Moment>>({});
+    React.useEffect(() => { TodayStorage.getStoredData(currentDate, setTodayItems) }, [currentDate.toISOString()]);
+    // let Ref = React.useRef<FlatList<moment.Moment>>(null);
+    React.useEffect(() => {
+        let dates = {} as Dictionary<moment.Moment>;
+        for (let i = -2; i < 10; i++) {
+            dates[moment().add(i, 'd').format('YYYY DD MMMM')] = moment().add(i, 'd');
+        }
+        setDateList(dates);
+    }, []);
 
     const styles = useStyles();
+    const { width: screenWidth } = Dimensions.get('window');
 
     const handleComplete = (id: string) => {
         let i = 0;
@@ -35,7 +48,7 @@ const TodayScreen: React.FC = () => {
             newData.splice(i, 1, todayItem);
             setTodayItems(newData);
             TodayStorage.storeItem(todayItem);
-            TodayStorage.storeData(newData);
+            TodayStorage.storeData(currentDate, newData);
         }
     }
 
@@ -56,19 +69,45 @@ const TodayScreen: React.FC = () => {
             newData = [...todayItems, item];
         }
         setTodayItems(newData);
-        TodayStorage.storeData(newData);
+        TodayStorage.storeData(currentDate, newData);
     }
 
     todayItems.sort((a, b) => {
         return a.startTime.isAfter(b.startTime) ? 1 : -1;
     });
+    const getItemLayout = (_: any, index: number) => {
+        return { length: screenWidth - 110, offset: (screenWidth - 110) * index, index };
+    }
+    const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        setCurrentDate(moment().add(event.nativeEvent.contentOffset.x / (screenWidth - 110), 'd'));
+    }
+
 
     return (
         <MainLayout
             addAction={() => {
                 setModalVisible(!modalVisible);
             }}
-            title={moment().format('MMMM D')}
+            title=''
+            titleComponent={
+                <View style={styles.titleContainer}>
+                    <FlatList
+                        getItemLayout={getItemLayout}
+                        initialScrollIndex={2}
+                        onScroll={handleScroll}
+                        horizontal
+                        data={Object.values(dateList)}
+                        showsHorizontalScrollIndicator={false}
+                        scrollEventThrottle={10}
+                        pagingEnabled
+                        renderItem={({ item }) => {
+                            return <Text key={item.toISOString()} style={styles.todayTitle} >
+                                {item.format('MMMM D')}
+                            </Text>;
+                        }}
+                    />
+                </View>
+            }
         >
             <FlatList
                 data={todayItems}
@@ -101,7 +140,6 @@ const TodayScreen: React.FC = () => {
         </MainLayout >
     );
 }
-
 
 
 export default TodayScreen;

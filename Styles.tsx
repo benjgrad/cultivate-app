@@ -8,7 +8,7 @@ export const deleteItemHeight = 20;
 
 export function useStyles(): any {
 
-    const { height: screenHeight } = Dimensions.get('window');
+    const { height: screenHeight, width: screenWidth } = Dimensions.get('window');
     const modalTop = 20;
     const itemHeight = 50;
 
@@ -46,6 +46,7 @@ export function useStyles(): any {
         container: {
             marginHorizontal: 24,
             flexDirection: "row",
+            height: 80,
             justifyContent: 'center', //Centered vertically
             alignItems: 'center', // Centered horizontally
             backgroundColor: Colors[colorScheme].background,
@@ -55,30 +56,46 @@ export function useStyles(): any {
             fontSize: 40,
             fontWeight: 'bold',
             lineHeight: 80,
-            flex: 85
+            flex: 85,
+        },
+        todayTitle: {
+            fontSize: 40,
+            width: screenWidth - 110,
+            fontWeight: 'bold',
+            lineHeight: 80,
+        },
+        titleContainer: {
+            top: 0,
+            height: 80,
+            width: screenWidth - 110,
+            overflow: 'hidden',
+            position: 'absolute',
+            left: 10
         },
         content: {
             paddingHorizontal: 16,
             flex: 1,
-            backgroundColor: '#ffffff00',
+            backgroundColor: Colors[colorScheme].background,
         },
         addAction: {
             flex: 15,
-            alignItems: 'center'
+            right: 0,
+            position: 'absolute',
+            borderColor: 'red',
         },
         scrollView: {},
         subtasks: {
-            backgroundColor: "#ffff0000",
+            backgroundColor: Colors[colorScheme].background,
             marginLeft: 20,
         },
         textContainer: {
-            backgroundColor: "#ffff0000",
+            backgroundColor: Colors[colorScheme].secondaryColor,
             marginHorizontal: 24,
             justifyContent: "center",
             flex: 1,
         },
         box: {
-            backgroundColor: "#acb5ac",
+            backgroundColor: Colors[colorScheme].secondaryColor,
             height: itemHeight,
             margin: 5,
             alignSelf: "stretch",
@@ -117,7 +134,7 @@ export function useStyles(): any {
         modalView: {
             marginTop: 60,
             height: screenHeight - modalTop,
-            backgroundColor: "white",
+            backgroundColor: Colors[colorScheme].background,
             borderRadius: 20,
             paddingHorizontal: 35,
             paddingTop: 15,
@@ -171,6 +188,7 @@ export function useStyles(): any {
             fontSize: 16
         },
         modalBack: {
+            backgroundColor: 'red',
             flex: 85,
             marginLeft: -15,
         },
@@ -218,6 +236,7 @@ export function useStyles(): any {
             padding: 0,
             width: checkBoxHeight,
             height: checkBoxHeight,
+            backgroundColor: 'white',
             borderRadius: 20,
             borderColor: 'black',
             borderWidth: 3,

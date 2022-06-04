@@ -150,7 +150,6 @@ export const getAllItems = async (setPerennialData: (items: TodayTask[]) => void
                 }
                 task.taskRef = item.id;
                 task.name = item.name;
-                console.log(task.name, task.priority)
                 taskList.push(task);
             }
         }

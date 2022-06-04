@@ -5,10 +5,10 @@ import { Annual, Dictionary, Perennial, Stats, TodayTask } from "../../types";
 import uuid from "react-native-uuid";
 import moment from "moment";
 
-export const storeData = async (data: TodayTask[]) => {
+export const storeData = async (date: moment.Moment, data: TodayTask[]) => {
     try {
         await AsyncStorage.setItem(
-            moment().format('YYYYMMMMDD'),
+            date.format('YYYYMMMMDD'),
             JSON.stringify(data)
         );
         console.log('saved data');
@@ -169,9 +169,9 @@ export const getStoredItem = async (id: string, setTodayTaskData: ((item: TodayT
     }
 }
 
-export const getStoredData = async (setTodayTaskData: (items: TodayTask[]) => void, existingData?: TodayTask[]) => {
+export const getStoredData = async (date: moment.Moment, setTodayTaskData: (items: TodayTask[]) => void, existingData?: TodayTask[]) => {
     try {
-        const jsonData = await AsyncStorage.getItem(moment().format('YYYYMMMMDD'));
+        const jsonData = await AsyncStorage.getItem(date.format('YYYYMMMMDD'));
         if (jsonData !== null) {
             // We have data!!
             if (!existingData) {
@@ -185,6 +185,9 @@ export const getStoredData = async (setTodayTaskData: (items: TodayTask[]) => vo
             })
             setTodayTaskData(newData);
             console.log("got data: ", newData.length);
+        }
+        else {
+            setTodayTaskData([]);
         }
     } catch (error) {
         Alert.alert(

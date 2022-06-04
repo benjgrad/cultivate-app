@@ -8,6 +8,8 @@ import { MileStoneItem } from "./MilestoneItem";
 import { PerennialContext } from "../PerennialContext";
 import { removeItem, storeItem } from "./PerennialStorage";
 import { checkBoxHeight, useStyles } from "../../Styles";
+import Colors from "../../constants/Colors";
+import useColorScheme from "../../hooks/useColorScheme";
 
 interface PerennialItemProps extends Perennial {
     propogateChange: PerennialSaveFn;
@@ -18,6 +20,7 @@ interface PerennialItemProps extends Perennial {
 
 export const PerennialItem: React.FC<PerennialItemProps> = React.memo((props) => {
     const styles = useStyles();
+    const colorScheme = useColorScheme();
     const perennialContext = React.useContext(PerennialContext);
 
     const thisItem = props as Perennial;
@@ -122,7 +125,7 @@ export const PerennialItem: React.FC<PerennialItemProps> = React.memo((props) =>
                         perennialContext.setCurrentItem(newItem, addSubtask, setThisToCurrent);
                     }}
                 >
-                    <Ionicons style={styles.addSubtask} size={checkBoxHeight} name="add" />
+                    <Ionicons color={Colors[colorScheme].text} style={styles.addSubtask} size={checkBoxHeight} name="add" />
                 </TouchableOpacity>
             </View>
             <View style={styles.subtasks}>
