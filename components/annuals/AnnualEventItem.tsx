@@ -9,7 +9,6 @@ import { removeItem, storeItem } from './AnnualStorage'
 import { Icon, Text } from '../Themed'
 
 interface AnnualEventItemProps extends AnnualEvent {
-    onPress: () => void,
     setParentAsCurrent: () => void,
     propogateChange: AnnualSaveFn<AnnualEvent>,
     updateId: string
@@ -67,7 +66,6 @@ export const AnnualEventItem: React.FC<AnnualEventItemProps> = (props) => {
             dueDate={props.dueDate}
             key={subtask.id}
             parent={thisItem.id}
-            onPress={() => { }}
             setParentAsCurrent={() => setThisToCurrent()}
             propogateChange={saveChild}
             updateId={props.updateId}
@@ -83,9 +81,9 @@ export const AnnualEventItem: React.FC<AnnualEventItemProps> = (props) => {
         console.log({ startTime: props.startTime, endTime: props.endTime, name: props.name })
         console.log(e);
     }
-    let dateString = props.startTime.format('MMMM DD h:mma') + ' - ' + props.endTime.format('h:mma');
+    let dateString = props.startTime.format('MMMM D h:mma') + ' - ' + props.endTime.format('h:mma');
     if (props.endTime.isAfter(props.startTime, 'date')) {
-        dateString = props.startTime.format('MMMM DD') + ' - ' + props.endTime.format('MMMM DD');
+        dateString = props.startTime.format('MMMM D') + ' - ' + props.endTime.format('MMMM D');
     }
     return <>
         <TouchableOpacity onPress={setThisToCurrent}>

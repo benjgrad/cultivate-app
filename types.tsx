@@ -34,6 +34,7 @@ export const newAnnual = () => {
 export interface AnnualEvent extends Annual {
   startTime: moment.Moment,
   endTime: moment.Moment,
+  scheduled: boolean
 }
 
 export interface Annual extends BaseTask {

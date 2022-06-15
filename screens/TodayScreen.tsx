@@ -7,6 +7,7 @@ import { Dimensions, FlatList, InteractionManager, NativeScrollEvent, NativeSynt
 import moment from 'moment';
 import uuid from 'react-native-uuid';
 import * as TodayStorage from "../components/today/TodayStorage";
+import * as AnnualStorage from "../components/annuals/AnnualStorage";
 import SwipeItem from '../components/common/SwipeItem';
 import { TodayItem } from '../components/today/TodayItem';
 import { useStyles } from '../Styles';
@@ -23,8 +24,12 @@ const TodayScreen: React.FC = () => {
     const [currenItem, setCurrentItem] = React.useState<TodayTask>(newTodayTask());
     const [currentDate, setCurrentDate] = React.useState<moment.Moment>(moment());
     const [dateList, setDateList] = React.useState<Dictionary<moment.Moment>>({});
-    React.useEffect(() => { TodayStorage.getStoredData(currentDate, setTodayItems) }, [currentDate.toISOString()]);
-    // let Ref = React.useRef<FlatList<moment.Moment>>(null);
+    React.useEffect(() => {
+        //TODO Figure out how to run this once a day
+        let newData = [] as TodayTask[];
+        TodayStorage.getStoredData(currentDate, (items) => newData = items);
+        AnnualStorage.getScheduledData(currentDate, setTodayItems, newData);
+    }, [currentDate.date()]);
     React.useEffect(() => {
         let dates = {} as Dictionary<moment.Moment>;
         for (let i = -2; i < 10; i++) {
@@ -79,7 +84,8 @@ const TodayScreen: React.FC = () => {
         return { length: screenWidth - 110, offset: (screenWidth - 110) * index, index };
     }
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        setCurrentDate(moment().add(event.nativeEvent.contentOffset.x / (screenWidth - 110), 'd'));
+
+        setCurrentDate(moment().add(event.nativeEvent.contentOffset.x / (screenWidth - 110) - 2, 'd'));
     }
 
 

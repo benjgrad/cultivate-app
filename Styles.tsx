@@ -199,6 +199,23 @@ export function useStyles(): any {
             width: 20,
             borderWidth: 1
         },
+        selected: {
+            backgroundColor: Colors[colorScheme].secondary.normal,
+        },
+        unselected: {
+            backgroundColor: Colors[colorScheme].primary.light,
+        },
+        btnContainer: {
+            margin: 20,
+            width: 160,
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: 40,
+            borderRadius: 10,
+        },
+        btn: {
+            fontSize: 20,
+        },
         topNav: {
             flexDirection: "row",
         },

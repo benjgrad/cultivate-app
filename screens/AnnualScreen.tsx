@@ -10,16 +10,19 @@ import AddAnnualModal from '../components/annuals/AddAnnualModal';
 import { getStoredData, removeItem, storeData, storeItem } from '../components/annuals/AnnualStorage';
 import { AnnualEventItem } from '../components/annuals/AnnualEventItem';
 import ChooseCalendarModal from '../components/annuals/ChooseCalendarModal';
+import moment from 'moment';
 
 export const AnnualScreen = () => {
   const styles = useStyles();
   const [calendarEvents, setCalendarEvents] = React.useState<Dictionary<AnnualEvent>>({});
   const [modalVisible, setModalVisible] = React.useState<boolean>(false);
   const [calendarModalVisible, setCalendarModalVisible] = React.useState<boolean>(false);
+  const [scheduled, setScheduled] = React.useState<boolean>(false);
   const [currentItem, setCurrentItem] = React.useState<Annual | AnnualEvent>(newAnnual());
   const [saveCurrentItem, setSaveCurrentItem] = React.useState<AnnualSaveFn<Annual | AnnualEvent>>((item: Annual) => { });
   const [openParentAction, setOpenParentAction] = React.useState<() => void>(() => { });
   const [updateId, setUpdateId] = React.useState<string>(uuid.v4().toString());
+  const [endOfRange, setEndOfRange] = React.useState<moment.Moment>(moment());
 
   const setCurrentAnnual = (
     newItem: Annual | AnnualEvent,
@@ -33,11 +36,14 @@ export const AnnualScreen = () => {
   };
 
 
-  React.useEffect(() => { getStoredData(setCalendarEvents); }, [updateId, calendarModalVisible]);
+  React.useEffect(() => { getStoredData(setCalendarEvents, endOfRange, endOfRange.clone().add(100, 'd')); }, [updateId, calendarModalVisible]);
 
   const saveChild = (item: AnnualEvent, action: 'save' | 'delete') => {
     setUpdateId(uuid.v4().toString());
     let newData = Object.assign({} as Dictionary<AnnualEvent>, calendarEvents);
+    if (newData[item.id]) {
+      item.scheduled = scheduled;
+    }
     if (action == 'save') {
       newData[item.id] = item;
       storeItem(item);
@@ -71,6 +77,12 @@ export const AnnualScreen = () => {
 
         <FlatList
           style={styles.modalScrollview}
+          onEndReached={() => {
+            endOfRange.add(100, 'd');
+            getStoredData((items) => setCalendarEvents({ ...calendarEvents, ...items }), endOfRange, endOfRange.clone().add(100, 'd'));
+            setEndOfRange(endOfRange);
+          }}
+          onEndReachedThreshold={14}
           data={Object.values(calendarEvents).sort((a, b) => {
             if (a.startTime.isSame(b.startTime)) {
               return a.endTime.isAfter(b.endTime) ? 1 : -1;
@@ -82,13 +94,12 @@ export const AnnualScreen = () => {
             return <AnnualEventItem
               {...item}
               dueDate={item.startTime}
-              onPress={() => { }}
               propogateChange={saveChild}
               setParentAsCurrent={() => { setModalVisible(false); }}
               updateId={updateId}
             />
           }} />
-        <AddAnnualModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
+        <AddAnnualModal isScheduled={scheduled} setScheduled={setScheduled} modalVisible={modalVisible} setModalVisible={setModalVisible} />
         <ChooseCalendarModal modalVisible={calendarModalVisible} setModalVisible={setCalendarModalVisible} />
       </AnnualContext.Provider>
     </MainLayout >

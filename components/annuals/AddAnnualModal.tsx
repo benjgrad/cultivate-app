@@ -12,6 +12,8 @@ import { useStyles } from "../../Styles";
 type ModalProps = {
   modalVisible: boolean,
   setModalVisible: (visible: boolean) => void;
+  isScheduled?: boolean;
+  setScheduled?: (scheduled: boolean) => void;
 }
 
 const AddAnnualModal: React.FC<ModalProps> = (props) => {
@@ -21,7 +23,9 @@ const AddAnnualModal: React.FC<ModalProps> = (props) => {
   const annualContext = React.useContext(AnnualContext);
 
   const [currentItem, setCurrentItem] = React.useState<Annual | AnnualEvent>({ ...annualContext.currentItem });
+  const [scheduled, setScheduled] = React.useState(props.isScheduled ?? false);
   const [prepRender, setPrepRender] = React.useState<string>(currentItem.prepTime.toString());
+
 
 
   const [parentName, setParentName] = React.useState<string>("");
@@ -29,6 +33,7 @@ const AddAnnualModal: React.FC<ModalProps> = (props) => {
   React.useEffect(() => {
     setCurrentItem(annualContext.currentItem);
     setPrepRender(annualContext.currentItem.prepTime.toString());
+    setScheduled(props.isScheduled === undefined ? false : props.isScheduled);
   }, [annualContext.currentItem.id, annualContext.currentItem.parent])
 
   React.useEffect(() => {
@@ -39,6 +44,8 @@ const AddAnnualModal: React.FC<ModalProps> = (props) => {
     }
 
   }, [annualContext.currentItem.id]);
+
+  const isToplevel = !annualContext.currentItem.parent;
 
   return (
     <FullscreenModal
@@ -78,6 +85,20 @@ const AddAnnualModal: React.FC<ModalProps> = (props) => {
         value={prepRender}
       />
 
+      {isToplevel && <View style={styles.centerItems}>
+        <TouchableOpacity
+          onPress={() => {
+            setCurrentItem({ ...currentItem, scheduled: scheduled });
+            if (props.setScheduled) {
+              props.setScheduled(!scheduled);
+              setScheduled(!scheduled);
+            }
+          }}>
+          <View style={[styles.btnContainer, scheduled ? styles.selected : styles.unselected]}>
+            <Text style={styles.btn}>Add to schedule</Text>
+          </View>
+        </TouchableOpacity>
+      </View>}
       <View style={styles.deleteBtn}>
         <TouchableOpacity
           onPress={() => {

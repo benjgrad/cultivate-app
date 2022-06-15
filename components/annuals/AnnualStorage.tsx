@@ -104,16 +104,50 @@ const formatDeserializedEvent = (data: any) => {
     return data as AnnualEvent;
 }
 
-export const getStoredData = async (setAnnualData: (items: Dictionary<AnnualEvent>) => void, existingData?: Annual[]) => {
+export const getScheduledData = async (currentDate: moment.Moment, setAnnualData: (items: TodayTask[]) => void, existingData: TodayTask[]) => {
+    const transform = (annuals: Dictionary<AnnualEvent>) => {
+        let todayDict = {} as Dictionary<TodayTask>;
+        if (existingData) {
+            existingData.forEach((task) => {
+                todayDict[task.taskRef] = task;
+            });
+        }
+        else {
+            existingData = [];
+        }
+        Object.values(annuals).forEach((annual) => {
+            if (annual.scheduled && !todayDict[annual.id]) {
+                let newItem = newTodayTask();
+                newItem.name = annual.name;
+                newItem.taskRef = annual.id;
+                newItem.startTime = annual.startTime;
+                newItem.endTime = annual.endTime;
+                existingData.push(newItem);
+            }
+        });
+        setAnnualData(existingData);
+    };
+    getStoredData(transform, currentDate, currentDate.clone().add(1, 'd'));
+}
+
+export const getStoredData = async (setAnnualData: (items: Dictionary<AnnualEvent>) => void, startDate?: moment.Moment, endDate?: moment.Moment) => {
     const calendars = await getCalendars(true);
     let items: Dictionary<AnnualEvent> = {};
     let intervalBegin = moment();
-    intervalBegin.set({ h: 0, m: 0 });
+    if (startDate) {
+        intervalBegin = startDate;
+    }
+    let endInterval = intervalBegin.clone().add(100, 'd');
+    if (endDate) {
+        endInterval = endDate;
+    }
+    intervalBegin.set({ h: 0, m: 0, s: 0, ms: 0 });
+    endInterval.set({ h: 0, m: 0, s: 0, ms: 0 });
     if (calendars && calendars.length > 0) {
         const events = await Calendar.getEventsAsync(calendars.map(cal => cal.id),
             intervalBegin
                 .toDate(),
-            intervalBegin.add(100, 'd').toDate());
+            endInterval.toDate());
         events.forEach(event => {
             const item = {
                 name: event.title,
@@ -132,21 +166,19 @@ export const getStoredData = async (setAnnualData: (items: Dictionary<AnnualEven
             const jsonData = await AsyncStorage.getItem('annualData');
             if (jsonData != null) {
                 // We have data!!
-                if (!existingData) {
-                    existingData = [];
-                }
                 const savedData = JSON.parse(jsonData);
                 if (!!savedData)
                     Object.values(savedData).forEach(item => {
                         let savedItem = formatDeserializedEvent(item);
                         if (items[savedItem.id]) {
+                            savedItem.name = items[savedItem.id].name;
                             savedItem.startTime = items[savedItem.id].startTime;
                             savedItem.endTime = items[savedItem.id].endTime;
                             savedItem.dueDate = savedItem.startTime;
                             items[savedItem.id] = { ...savedItem }
                         }
                     });
-                console.log("got annual data: ", items.length);
+                console.log("got annual data: ", Object.values(items).length);
 
                 setAnnualData(items);
             }

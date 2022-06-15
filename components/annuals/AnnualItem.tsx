@@ -8,7 +8,6 @@ import { removeItem, storeItem } from './AnnualStorage'
 import { Icon, Text } from '../Themed'
 
 interface AnnualItemProps extends Annual {
-    onPress: () => void,
     startTime?: moment.Moment,
     endTime?: moment.Moment,
     setParentAsCurrent: () => void,
@@ -55,7 +54,6 @@ export const AnnualItem: React.FC<AnnualItemProps> = (props) => {
             {...subtask}
             key={subtask.id}
             parent={thisItem.id}
-            onPress={() => { }}
             setParentAsCurrent={() => setThisToCurrent()}
             propogateChange={saveThisAnnual}
             updateId={props.updateId}
