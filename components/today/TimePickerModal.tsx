@@ -77,17 +77,23 @@ export const TimePickerModal: React.FC<TimePickerModalProps> = (props) => {
                 <TouchableOpacity
                     style={styles.modalDone}
                     onPress={() => {
-                        startTime.set("D", props.currentDate.dayOfYear());
-                        startTime.set("M", props.currentDate.month());
-                        startTime.set("y", props.currentDate.year());
-                        endTime.set("D", props.currentDate.dayOfYear());
-                        endTime.set("M", props.currentDate.month());
-                        endTime.set("y", props.currentDate.year());
+                        let newStart = startTime.clone();
+                        newStart.set({
+                            "D": props.currentDate.date(),
+                            "M": props.currentDate.month(),
+                            "y": props.currentDate.year()
+                        });
+                        let newEnd = endTime.clone();
+                        newEnd.set({
+                            "D": props.currentDate.date(),
+                            "M": props.currentDate.month(),
+                            "y": props.currentDate.year()
+                        });
                         props.onClose({
                             ...props,
                             name: name ? name : props.name,
-                            startTime,
-                            endTime
+                            startTime: newStart,
+                            endTime: newEnd
                         });
                     }}>
                     <Text style={styles.modalDoneText}>Done</Text>

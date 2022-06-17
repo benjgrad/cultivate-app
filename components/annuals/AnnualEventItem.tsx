@@ -75,15 +75,15 @@ export const AnnualEventItem: React.FC<AnnualEventItemProps> = (props) => {
         annualContext.setCurrentItem(thisItem, saveThisAnnual, props.setParentAsCurrent);
     }
     try {
-        props.startTime.format('MMMM DD h:mma')
+        props.startTime.format('YYYY MMMM DD h:mma')
     }
     catch (e) {
         console.log({ startTime: props.startTime, endTime: props.endTime, name: props.name })
         console.log(e);
     }
-    let dateString = props.startTime.format('MMMM D h:mma') + ' - ' + props.endTime.format('h:mma');
+    let dateString = props.startTime.format('YYYY MMMM D h:mma') + ' - ' + props.endTime.format('h:mma');
     if (props.endTime.isAfter(props.startTime, 'date')) {
-        dateString = props.startTime.format('MMMM D') + ' - ' + props.endTime.format('MMMM D');
+        dateString = props.startTime.format('YYYY MMMM D') + ' - ' + props.endTime.format('MMMM D');
     }
     return <>
         <TouchableOpacity onPress={setThisToCurrent}>

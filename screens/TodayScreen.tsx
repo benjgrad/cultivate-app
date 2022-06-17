@@ -16,6 +16,8 @@ import { TimePickerModal } from '../components/today/TimePickerModal';
 import Animated from 'react-native-reanimated';
 import { Text, View } from '../components/Themed';
 
+const PREVIOUSDAYS = 15;
+const FUTUREDAYS = 10;
 
 const TodayScreen: React.FC = () => {
     const [modalVisible, setModalVisible] = React.useState<boolean>(false);
@@ -26,13 +28,13 @@ const TodayScreen: React.FC = () => {
     const [dateList, setDateList] = React.useState<Dictionary<moment.Moment>>({});
     React.useEffect(() => {
         //TODO Figure out how to run this once a day
-        let newData = [] as TodayTask[];
-        TodayStorage.getStoredData(currentDate, (items) => newData = items);
-        AnnualStorage.getScheduledData(currentDate, setTodayItems, newData);
+        TodayStorage.getStoredData(currentDate, (items) => {
+            AnnualStorage.getScheduledData(currentDate, setTodayItems, items);
+        });
     }, [currentDate.date()]);
     React.useEffect(() => {
         let dates = {} as Dictionary<moment.Moment>;
-        for (let i = -2; i < 10; i++) {
+        for (let i = -PREVIOUSDAYS; i < FUTUREDAYS; i++) {
             dates[moment().add(i, 'd').format('YYYY DD MMMM')] = moment().add(i, 'd');
         }
         setDateList(dates);
@@ -85,7 +87,7 @@ const TodayScreen: React.FC = () => {
     }
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
 
-        setCurrentDate(moment().add(event.nativeEvent.contentOffset.x / (screenWidth - 110) - 2, 'd'));
+        setCurrentDate(moment().add(event.nativeEvent.contentOffset.x / (screenWidth - 110) - PREVIOUSDAYS, 'd'));
     }
 
 
@@ -99,7 +101,7 @@ const TodayScreen: React.FC = () => {
                 <View style={styles.titleContainer}>
                     <FlatList
                         getItemLayout={getItemLayout}
-                        initialScrollIndex={2}
+                        initialScrollIndex={PREVIOUSDAYS}
                         onScroll={handleScroll}
                         horizontal
                         data={Object.values(dateList)}

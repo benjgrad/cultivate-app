@@ -12,6 +12,8 @@ import { AnnualEventItem } from '../components/annuals/AnnualEventItem';
 import ChooseCalendarModal from '../components/annuals/ChooseCalendarModal';
 import moment from 'moment';
 
+const THRESHOLD = 12;
+
 export const AnnualScreen = () => {
   const styles = useStyles();
   const [calendarEvents, setCalendarEvents] = React.useState<Dictionary<AnnualEvent>>({});
@@ -23,6 +25,7 @@ export const AnnualScreen = () => {
   const [openParentAction, setOpenParentAction] = React.useState<() => void>(() => { });
   const [updateId, setUpdateId] = React.useState<string>(uuid.v4().toString());
   const [endOfRange, setEndOfRange] = React.useState<moment.Moment>(moment());
+  const [data, setData] = React.useState<AnnualEvent[]>(Object.values(calendarEvents));
 
   const setCurrentAnnual = (
     newItem: Annual | AnnualEvent,
@@ -35,8 +38,38 @@ export const AnnualScreen = () => {
     setOpenParentAction(() => setParentAsCurrent)
   };
 
+  React.useEffect(() => {
+    sort(calendarEvents);
+  }, [calendarEvents]);
 
-  React.useEffect(() => { getStoredData(setCalendarEvents, endOfRange, endOfRange.clone().add(100, 'd')); }, [updateId, calendarModalVisible]);
+  React.useEffect(() => {
+    console.log("Cleared all events")
+    getStoredData(setCalendarEvents, moment(), moment().add(100, 'd'));
+    setEndOfRange(moment().add(300, 'd'));
+  }, [calendarModalVisible]);
+  const sort = (dict: Dictionary<AnnualEvent>) => {
+    let newData = Object.values(dict).sort((a, b) => {
+      if (a.startTime.isSame(b.startTime)) {
+        return a.endTime.isAfter(b.endTime) ? 1 : -1;
+      }
+      return a.startTime.isAfter(b.startTime) ? 1 : -1;
+    });
+    setData(newData);
+  }
+  // React.useEffect(() => { setEndOfRange(moment()) }, [calendarModalVisible]);
+  // const getMoreEvents = () => {
+  //   const updateCalendarEvents = (items: Dictionary<AnnualEvent>) => {
+  //     console.log("updated events", Object.keys({ ...items, ...calendarEvents }).length != Object.keys(calendarEvents).length)
+  //     if (Object.keys({ ...items, ...calendarEvents }).length < THRESHOLD) {// && Object.keys({ ...items, ...calendarEvents }).length != Object.keys(calendarEvents).length) {
+  //       setEndOfRange(endOfRange.add(100, 'd'));
+  //       setCalendarEvents({ ...items, ...calendarEvents });
+  //     }
+  //   };
+  //   getStoredData(updateCalendarEvents, endOfRange, endOfRange.clone().add(100, 'd'));
+  // }
+  // React.useEffect(() => {
+  //   getMoreEvents();
+  // }, [endOfRange]);
 
   const saveChild = (item: AnnualEvent, action: 'save' | 'delete') => {
     setUpdateId(uuid.v4().toString());
@@ -53,9 +86,11 @@ export const AnnualScreen = () => {
       removeItem(item);
     }
     storeData(newData);
-    setCalendarEvents(newData);
+    setCalendarEvents({ ...calendarEvents, ...newData });
+    sort(newData);
     setModalVisible(false);
   };
+
 
   const titlePressAction = (event: GestureResponderEvent) => {
     setCalendarModalVisible(true);
@@ -78,17 +113,13 @@ export const AnnualScreen = () => {
         <FlatList
           style={styles.modalScrollview}
           onEndReached={() => {
-            endOfRange.add(100, 'd');
-            getStoredData((items) => setCalendarEvents({ ...calendarEvents, ...items }), endOfRange, endOfRange.clone().add(100, 'd'));
-            setEndOfRange(endOfRange);
+            //TODO handle duplicate keys
+            // endOfRange.add(100, 'd');
+            // getStoredData((items) => setCalendarEvents({ ...calendarEvents, ...items }), endOfRange, endOfRange.clone().add(100, 'd'));
+            // setEndOfRange(endOfRange);
           }}
-          onEndReachedThreshold={14}
-          data={Object.values(calendarEvents).sort((a, b) => {
-            if (a.startTime.isSame(b.startTime)) {
-              return a.endTime.isAfter(b.endTime) ? 1 : -1;
-            }
-            return a.startTime.isAfter(b.startTime) ? 1 : -1;
-          })}
+          onEndReachedThreshold={1}
+          data={data}
           keyExtractor={(cal: Annual | AnnualEvent) => cal.id}
           renderItem={({ item }) => {
             return <AnnualEventItem

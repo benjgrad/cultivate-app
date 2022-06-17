@@ -184,7 +184,7 @@ export const getStoredData = async (date: moment.Moment, setTodayTaskData: (item
                 return item;
             })
             setTodayTaskData(newData);
-            console.log("got data: ", newData.length);
+            console.log("got today data: ", newData.length);
         }
         else {
             setTodayTaskData([]);
