@@ -151,7 +151,7 @@ export const getStoredData = async (setAnnualData: (items: Dictionary<AnnualEven
         events.forEach(event => {
             const item = {
                 name: event.title,
-                id: event.instanceId ?? event.id,
+                id: (event.instanceId ?? event.id) + event.startDate,
                 dueDate: moment(event.startDate),
                 startTime: moment(event.startDate),
                 endTime: moment(event.endDate),
