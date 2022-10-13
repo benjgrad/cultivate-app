@@ -59,7 +59,8 @@ const AddAnnualModal: React.FC<ModalProps> = (props) => {
       scroll
     >
       <TextInput
-        style={[styles.inputRow, styles.nameTextField]}
+        multiline
+        style={[styles.inputRow, styles.nameTextField, styles.multiline]}
         placeholder={"Name"}
         onChangeText={(name: string) => {
           setCurrentItem({ ...currentItem, name });

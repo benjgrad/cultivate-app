@@ -218,7 +218,7 @@ export const getCalendars: (onlyVisible?: boolean) => Promise<Calendar.Calendar[
 
         const displayCalendars = JSON.parse(jsonData);
         calendars = calendars.map((value) => {
-            value.isVisible = displayCalendars[value.id].isVisible;
+            value.isVisible = displayCalendars[value.id]?.isVisible;
             return value;
         })
 

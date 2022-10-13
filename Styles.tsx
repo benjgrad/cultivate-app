@@ -90,7 +90,7 @@ export function useStyles(): any {
         scrollView: {},
         subtasks: {
             backgroundColor: Colors[colorScheme].primary.normal,
-            marginLeft: 20,
+            marginLeft: 12,
         },
         textContainer: {
             backgroundColor: Colors[colorScheme].secondary.normal,
@@ -100,8 +100,9 @@ export function useStyles(): any {
         },
         box: {
             backgroundColor: Colors[colorScheme].secondary.normal,
-            height: itemHeight,
-            margin: 5,
+            display: 'flex',
+            paddingVertical: 10,
+            margin: 2,
             alignSelf: "stretch",
             borderRadius: 15,
             flexDirection: "row",
@@ -131,7 +132,10 @@ export function useStyles(): any {
             color: Colors[colorScheme].primary.text,
         },
         name: {
+            display: 'flex',
+            flex: 1,
             fontSize: 20,
+            width: '90%',
         },
         milestone: {
             fontSize: 20,
@@ -150,9 +154,7 @@ export function useStyles(): any {
             size: checkBoxHeight,
             width: checkBoxHeight,
             height: checkBoxHeight,
-            position: "absolute",
-            right: 15,
-            top: (itemHeight - checkBoxHeight) / 2,
+            marginRight: 10,
         },
         modalView: {
             marginTop: 60,
@@ -232,12 +234,11 @@ export function useStyles(): any {
             flexDirection: 'row',
             marginLeft: -15,
         },
-
-        freqPickerTxt: {
-            alignItems: 'center',
-            top: 10,
-            fontSize: 20,
-            textAlign: 'center'
+        frequencyPicker: {
+            marginTop: 10,
+            padding: 0,
+            borderRadius: 10,
+            overflow: 'hidden',
         },
         pickerItems: {
             color: Colors[colorScheme].primary.text
@@ -258,18 +259,46 @@ export function useStyles(): any {
             top: 10,
             flex: 1,
         },
+        frequencyPickerTxt: {
+            display: 'flex',
+            flex: 0,
+            justifyContent: 'center',
+            borderWidth: 1,
+            borderRadius: 10,
+            padding: 15,
+            fontSize: 20,
+            color: Colors[colorScheme].primary.text,
+            backgroundColor: Colors[colorScheme].primary.normal,
+            textAlign: 'center',
+            paddingHorizontal: 10
+        },
         inputRow: {
             color: Colors[colorScheme].primary.text,
             backgroundColor: Colors[colorScheme].primary.normal,
             textAlign: 'center',
-            height: 50,
+            justifyContent: 'center',
             borderWidth: 1,
             borderRadius: 10,
             marginVertical: 10,
             paddingHorizontal: 10
         },
+        multiline: {
+            lineHeight: 35,
+        },
+        freqPickerTxt: {
+            color: Colors[colorScheme].secondary.text,
+            textAlign: 'center',
+            fontSize: 18,
+            padding: 0,
+            marginTop: 15,
+        },
         nameTextField: {
-            height: 50,
+            display: 'flex',
+            flex: 0,
+            justifyContent: 'center',
+            borderWidth: 1,
+            borderRadius: 10,
+            padding: 15,
             fontSize: 20,
             top: 10,
         },
@@ -280,9 +309,7 @@ export function useStyles(): any {
             borderRadius: 20,
             borderColor: 'black',
             borderWidth: 3,
-            position: 'absolute',
-            right: 15,
-            top: (itemHeight - checkBoxHeight) / 2,
+            marginRight: 10,
         },
         todayCheckBox: {
             padding: 0,
@@ -314,7 +341,7 @@ export function useStyles(): any {
             width: '80%',
         },
         modalScrollview: {
-            paddingHorizontal: 30,
+            paddingHorizontal: 20,
             marginHorizontal: -30
         },
         milstoneItem: {

@@ -25,12 +25,12 @@ export const FrequencyPicker: React.FC<FrequencyPickerProps> = (props) => {
     const plO = occur != 1;
     const frequencyMsg = (plO ? occurrences + ' times every ' : 'Once every ') + interval;
 
-    return <>
+    return <View style={styles.frequencyPicker}>
         <TouchableOpacity
             onPress={() => { setModalVisible(true); }}>
-            <View style={[styles.inputRow, styles.nameTextField]}>
-                <Text style={styles.frequencyMsg}>{frequencyMsg}</Text>
-            </View>
+            <Text style={[styles.frequencyPickerTxt]}>
+                {frequencyMsg}
+            </Text>
         </TouchableOpacity>
         <FullscreenModal
             modalVisible={modalVisible}
@@ -62,5 +62,5 @@ export const FrequencyPicker: React.FC<FrequencyPickerProps> = (props) => {
                 <Picker.Item label="year" value="year" />
             </Picker>
         </FullscreenModal>
-    </>;
+    </View>;
 };
